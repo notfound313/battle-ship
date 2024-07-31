@@ -26,7 +26,7 @@ public abstract class  Ship: IShip
 		_cordinates = cordinate ;
 	}
 	
-	public bool isShunk()
+	public bool IsShunk()
 	{
 		return _hits == _sizeShip;
 	}
@@ -36,5 +36,14 @@ public abstract class  Ship: IShip
 		return _cordinates;
 	}
 	
+	public bool IsHit(Cordinate cordinate)
+	{
+		if(_cordinates.Contains(cordinate))
+		{
+			_hits++;
+			return true;
+		}
+		return false;
+	}
 	
 }
