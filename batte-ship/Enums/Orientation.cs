@@ -1,4 +1,4 @@
-namespace batte_ship;
+namespace Components.Battle.Ship;
 
 public enum Orientation
 {
