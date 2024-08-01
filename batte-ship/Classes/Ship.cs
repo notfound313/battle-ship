@@ -3,8 +3,8 @@ namespace Components.Battle.Ship;
 public abstract class Ship : IShip
 {
 	private int _hits;
-	private int _sizeShip;
-	private ShipType? _shipType;
+	public readonly int _sizeShip;
+	private readonly ShipType _shipType;
 	private OccopationType? _occopationType;
 	private List<Cordinate> _cordinates;
 	public string ShipName { get; set; }
@@ -22,9 +22,9 @@ public abstract class Ship : IShip
 	{
 		return _sizeShip;
 	}
-	public void setCordinates(List<Cordinate> cordinate)
+	public void setCordinates(List<Cordinate> cordinates)
 	{
-		_cordinates = cordinate;
+		_cordinates = cordinates;
 	}
 
 	public bool IsShunk()

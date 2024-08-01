@@ -1,6 +1,6 @@
 namespace Components.Battle.Ship;
 
-public class ShipBoard : Board<Ship>
+public class ShipBoard : Board<ShipBoard>
 {
 	public bool IsAllShinked()
 	{
