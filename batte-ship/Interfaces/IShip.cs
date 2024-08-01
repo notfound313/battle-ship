@@ -8,4 +8,7 @@ public interface IShip
 	bool IsShunk();
 	
 	bool IsHit(Cordinate cordinate);
+	
+	void setCordinates(List<Cordinate> cordinates);
+	List<Cordinate> GetCordinates();
 }

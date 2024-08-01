@@ -31,7 +31,7 @@ public abstract class  Ship: IShip
 		return _hits == _sizeShip;
 	}
 	
-	public List<Cordinate> getCordinates()
+	public List<Cordinate> GetCordinates()
 	{
 		return _cordinates;
 	}
