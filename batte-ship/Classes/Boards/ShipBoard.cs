@@ -43,6 +43,7 @@ public class ShipBoard : Board<ShipBoard>
 		ship.setCordinates(new List<Cordinate>(){from,to});
 		return AddShip(ship);
 	}
+	
 	private bool CalculateShipCordinates(Cordinate from, Cordinate to, out List<Cordinate> cordinates)
 	{
 		cordinates = new List<Cordinate>();
@@ -69,11 +70,7 @@ public class ShipBoard : Board<ShipBoard>
 		return CalculateShipCordinates(from,to,out List<Cordinate> cordinates) && cordinates.Exists(cordinate => isOccopied(cordinate));
 	}
 	
-	private bool IsShipCanBePlaced(Cordinate from, Cordinate to)
-	{
-		return !IsShipPlaced(from,to);
-	}
-	
+	private bool IsShipCanBePlaced(Cordinate from, Cordinate to) => !IsShipPlaced(from, to);	
 	private bool IsShipPlaced(Cordinate from, Cordinate to)
 	{
 		return ships.Any(ship => ship.GetCordinates().Contains(from) && ship.GetCordinates().Contains(to));

@@ -6,8 +6,8 @@ namespace Components.Battle.Ship;
 public class GameController
 {
 	private List<IPlayer> _players;
-	private Dictionary<IPlayer, AttackBoard> _attackBoards;
-	private Dictionary<IPlayer, ShipBoard> _shipBoards;
+	private Dictionary<IPlayer, AttackBoard> _attackBoards = new();
+	private Dictionary<IPlayer, ShipBoard> _shipBoards = new();
 	private IPlayer _currentPlayer;
 	private IPlayer _nextPlayer;
 	private Dictionary<IPlayer,List<IShip>> _ships = new();
@@ -19,20 +19,40 @@ public class GameController
 	public GameController(List<IPlayer> players)
 	{
 		_players = players;
-		_attackBoards = new Dictionary<IPlayer, AttackBoard>();
-		_shipBoards = new Dictionary<IPlayer, ShipBoard>();
-		_ships = new Dictionary<IPlayer, List<IShip>>();
-		_cordinates = new Dictionary<IPlayer, List<Cordinate>>();
 		
-		
+		BattleShip battleShip = new("BattleShip");
+		CarrierShip carrierShip = new("CarrierShip");
+		DestroyerShip destroyerShip = new("DestroyerShip");
+		SubmarineShip submarineShip = new("SubmarineShip");
+		CrusierShip crusierShip = new("CrusierShip");
 
-		foreach (var player in _players)
-		{
-			_shipBoards.Add(player, new ShipBoard());
-			_attackBoards.Add(player, new AttackBoard());
-			_ships.Add(player, new List<IShip>());
-			_cordinates.Add(player, new List<Cordinate>());
-		}
+		_ships[_players[0]].Add(battleShip);
+		_ships[_players[0]].Add(carrierShip);
+		_ships[_players[0]].Add(destroyerShip);
+		_ships[_players[0]].Add(submarineShip);
+		_ships[_players[0]].Add(crusierShip);
+
+		_ships[_players[0]].Add(battleShip);
+		_ships[_players[0]].Add(carrierShip);
+		_ships[_players[0]].Add(destroyerShip);
+		_ships[_players[0]].Add(submarineShip);
+		_ships[_players[0]].Add(crusierShip);
+
+		_shipBoards[_players[0]] = new ShipBoard();
+		_attackBoards[_players[0]] = new AttackBoard();
+
+		_shipBoards[_players[1]] = new ShipBoard();
+		_attackBoards[_players[1]] = new AttackBoard();
+
+
+
+		// foreach (var player in _players)
+		// {
+		// 	_shipBoards.Add(player, new ShipBoard());
+		// 	_attackBoards.Add(player, new AttackBoard());
+		// 	_ships.Add(player, new List<IShip>());
+		// 	_cordinates.Add(player, new List<Cordinate>());
+		// }
 
 		_attackBoard = new AttackBoard();
 		_shipBoard = new ShipBoard();
