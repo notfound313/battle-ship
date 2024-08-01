@@ -6,6 +6,7 @@ public abstract class Ship : IShip
 	public readonly int _sizeShip;
 	private readonly ShipType _shipType;
 	private OccopationType? _occopationType;
+	public Orientation Orientation { get; set; }
 	private List<Cordinate> _cordinates;
 	public string ShipName { get; set; }
 
@@ -22,9 +23,14 @@ public abstract class Ship : IShip
 	{
 		return _sizeShip;
 	}
-	public void setCordinates(List<Cordinate> cordinates)
+	public bool setCordinates(List<Cordinate> cordinates)
 	{
+		if (cordinates.Count != _sizeShip)
+		{
+			return false;
+		}
 		_cordinates = cordinates;
+		return true;
 	}
 
 	public bool IsShunk()

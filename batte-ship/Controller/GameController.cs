@@ -10,8 +10,8 @@ public class GameController
 	private Dictionary<IPlayer, ShipBoard> _shipBoards;
 	private IPlayer _currentPlayer;
 	private IPlayer _nextPlayer;
-	private Dictionary<IPlayer,List<IShip>> _ships;
-	private Dictionary<IPlayer,List<Cordinate>> _cordinates;
+	private Dictionary<IPlayer,List<IShip>> _ships = new();
+	private Dictionary<IPlayer,List<Cordinate>> _cordinates = new();
 
 	private Board<AttackBoard> _attackBoard;
 	private Board<ShipBoard> _shipBoard;
@@ -23,17 +23,19 @@ public class GameController
 		_shipBoards = new Dictionary<IPlayer, ShipBoard>();
 		_ships = new Dictionary<IPlayer, List<IShip>>();
 		_cordinates = new Dictionary<IPlayer, List<Cordinate>>();
+		
+		
 
 		foreach (var player in _players)
 		{
-			_attackBoards.Add(player, new AttackBoard());
 			_shipBoards.Add(player, new ShipBoard());
+			_attackBoards.Add(player, new AttackBoard());
 			_ships.Add(player, new List<IShip>());
 			_cordinates.Add(player, new List<Cordinate>());
 		}
 
 		_attackBoard = new AttackBoard();
-		// _shipBoard = new ShipBoard();
+		_shipBoard = new ShipBoard();
 
 		_currentPlayer = _players[0];
 		_nextPlayer = _players[1];
@@ -43,8 +45,6 @@ public class GameController
 	{
 		foreach (var player in _players)
 		{
-			Console.WriteLine($"Player {player.Name} is playing");
-			Console.WriteLine("Place your ships");
 			PlaceShips(player);
 		}
 	}
@@ -71,7 +71,7 @@ public class GameController
 		}
 		return false;
 	}
-	public bool HasPLayer(IPlayer player)
+	public bool HasPlayer(IPlayer player)
 	{
 		return _players.Contains(player);
 	}
@@ -81,7 +81,7 @@ public class GameController
 		return attackBoard.IsHit(cordinate);
 	}
 	
-	public bool ProsessShorResult(IPlayer player, Cordinate cordinate, bool isShotHit)
+	public bool ProcessShotResult(IPlayer player, Cordinate cordinate, bool isShotHit)
 	{
 		var attackBoard = _attackBoards[player];
 		if (isShotHit)

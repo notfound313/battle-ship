@@ -4,12 +4,12 @@ public class ShipBoard : Board<ShipBoard>
 {
 	public bool IsAllShinked()
 	{
-		return ships.All(ship => ship.IsShunk());
+		return ships.TrueForAll(ship => ship.IsShunk());
 	}
 	
 	public bool IsAnyShipHit(Cordinate cordinate)
 	{
-		return ships.Any(ship => ship.IsHit(cordinate));
+		return ships.Exists(ship => ship.IsHit(cordinate));
 	}
 	
 	public List<IShip> GetAllShips()
@@ -33,6 +33,10 @@ public class ShipBoard : Board<ShipBoard>
 			return false;
 		}
 		if(ship.GetShipSize() != from.y - to.y + 1)
+		{
+			return false;
+		}
+		if(!IsPlacementValid(from,to))
 		{
 			return false;
 		}
@@ -62,7 +66,7 @@ public class ShipBoard : Board<ShipBoard>
 	}
 	private bool IsPlacementValid(Cordinate from, Cordinate to)
 	{
-		return CalculateShipCordinates(from,to,out List<Cordinate> cordinates) && cordinates.All(cordinate => isOccopied(cordinate));
+		return CalculateShipCordinates(from,to,out List<Cordinate> cordinates) && cordinates.Exists(cordinate => isOccopied(cordinate));
 	}
 	
 	private bool IsShipCanBePlaced(Cordinate from, Cordinate to)
