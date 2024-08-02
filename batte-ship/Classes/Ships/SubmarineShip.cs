@@ -7,4 +7,5 @@ public class SubmarineShip:Ship
 	{
 		
 	}
+	public SubmarineShip(){}
 }

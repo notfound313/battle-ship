@@ -1,7 +1,16 @@
 namespace Components.Battle.Ship;
 
-public class ShipBoard : Board<ShipBoard>
+public class ShipBoard : Board<Ship>
 {
+	
+	public ShipBoard(List<Ship> ships) : base()
+	{
+		SetListShips(ships);
+		SetShipInBoard();
+		
+	}
+
+	#region Checking if the ship is hit
 	public bool IsAllShinked()
 	{
 		return ships.TrueForAll(ship => ship.IsShunk());
@@ -11,12 +20,27 @@ public class ShipBoard : Board<ShipBoard>
 	{
 		return ships.Exists(ship => ship.IsHit(cordinate));
 	}
+	#endregion
 	
-	public List<IShip> GetAllShips()
+	#region Setting the ship in the board
+	public override void SetShipInBoard()
+	{
+		foreach(var ship in ships)
+		{
+			foreach(var cordinate in ship.GetCordinates())
+			{
+				board[cordinate.x,cordinate.y] = ship;
+			}
+			
+		}
+		
+	}
+	
+	public List<Ship> GetAllShips()
 	{	
 		return ships;
 	}
-	public bool AddShip(IShip ship)
+	public bool AddShip(Ship ship)
 	{
 		if(ships.Contains(ship))
 		{
@@ -26,7 +50,10 @@ public class ShipBoard : Board<ShipBoard>
 		ships.Add(ship);
 		return true;
 	}
-	public bool PlaceShip(IShip ship, Cordinate from, Cordinate to)
+	#endregion
+	
+	#region Checking if the ship is placed in the board
+	public bool PlaceShip(Ship ship, Cordinate from, Cordinate to)
 	{
 		if(ship.GetShipSize() != from.x - to.x + 1)
 		{
@@ -40,20 +67,24 @@ public class ShipBoard : Board<ShipBoard>
 		{
 			return false;
 		}
-		ship.setCordinates(new List<Cordinate>(){from,to});
+		if(IsShipPlaced(from,to))
+		{
+			return false;
+		}
+		ship.setCordinates(CalculateShipCordinates(from,to));
 		return AddShip(ship);
 	}
 	
-	private bool CalculateShipCordinates(Cordinate from, Cordinate to, out List<Cordinate> cordinates)
+	private List<Cordinate> CalculateShipCordinates(Cordinate from, Cordinate to)
 	{
-		cordinates = new List<Cordinate>();
+		var cordinates = new List<Cordinate>();
 		if(from.x == to.x)
 		{
 			for(int i = from.y; i <= to.y; i++)
 			{
 				cordinates.Add(new Cordinate(from.x,i));
 			}
-			return true;
+			
 		}
 		if(from.y == to.y)
 		{
@@ -61,23 +92,33 @@ public class ShipBoard : Board<ShipBoard>
 			{
 				cordinates.Add(new Cordinate(i,from.y));
 			}
-			return true;
+			
+			
 		}
-		return false;
+		return cordinates;
 	}
 	private bool IsPlacementValid(Cordinate from, Cordinate to)
 	{
-		return CalculateShipCordinates(from,to,out List<Cordinate> cordinates) && cordinates.Exists(cordinate => isOccopied(cordinate));
+		if(from.x < 0 || from.y < 0 || to.x < 0 || to.y < 0)
+		{
+			return false;
+		}
+		if(from.x >= GetBoardRowLength() || from.y >= GetBoardColumnLength())
+		{
+			return false;
+		}
+		if(to.x >= GetBoardRowLength() || to.y >= GetBoardColumnLength())
+		{
+			return false;
+		}
+		return true;
 	}
 	
-	private bool IsShipCanBePlaced(Cordinate from, Cordinate to) => !IsShipPlaced(from, to);	
 	private bool IsShipPlaced(Cordinate from, Cordinate to)
 	{
-		return ships.Any(ship => ship.GetCordinates().Contains(from) && ship.GetCordinates().Contains(to));
+		return ships.Exists(ship => ship.GetCordinates().Contains(from) && ship.GetCordinates().Contains(to));
 	}
 	
-	private List<Cordinate> GetCordinates(Cordinate from, Cordinate to)
-	{
-		return new List<Cordinate>(){from,to};
-	}
+
+	#endregion
 }

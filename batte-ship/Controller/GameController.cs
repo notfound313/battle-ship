@@ -1,3 +1,4 @@
+using System.Runtime.Serialization;
 using System.Collections.Generic;
 
 using Components.Player;
@@ -10,76 +11,56 @@ public class GameController
 	private Dictionary<IPlayer, ShipBoard> _shipBoards = new();
 	private IPlayer _currentPlayer;
 	private IPlayer _nextPlayer;
-	private Dictionary<IPlayer,List<IShip>> _ships = new();
-	private Dictionary<IPlayer,List<Cordinate>> _cordinates = new();
+	private Dictionary<IPlayer, List<Ship>> _shipsPlayer = new();
+	private Dictionary<IPlayer, List<Cordinate>> _cordinates = new();
+	private List<Ship> _ships = new();
 
-	private Board<AttackBoard> _attackBoard;
-	private Board<ShipBoard> _shipBoard;
-	
+
+
 	public GameController(List<IPlayer> players)
 	{
 		_players = players;
-		
-		BattleShip battleShip = new("BattleShip");
-		CarrierShip carrierShip = new("CarrierShip");
-		DestroyerShip destroyerShip = new("DestroyerShip");
-		SubmarineShip submarineShip = new("SubmarineShip");
-		CrusierShip crusierShip = new("CrusierShip");
+		var knowTypes = new List<Type> { typeof(BattleShip), typeof(CruiserShip), typeof(DestroyerShip), typeof(SubmarineShip), typeof(CarrierShip), typeof(Cordinate) };
+		DataContractSerializer dataContract = new DataContractSerializer(typeof(List<Ship>), knowTypes);
 
-		_ships[_players[0]].Add(battleShip);
-		_ships[_players[0]].Add(carrierShip);
-		_ships[_players[0]].Add(destroyerShip);
-		_ships[_players[0]].Add(submarineShip);
-		_ships[_players[0]].Add(crusierShip);
+		using (FileStream fs = new FileStream("ships.xml", FileMode.Open))
+		{
 
-		_ships[_players[0]].Add(battleShip);
-		_ships[_players[0]].Add(carrierShip);
-		_ships[_players[0]].Add(destroyerShip);
-		_ships[_players[0]].Add(submarineShip);
-		_ships[_players[0]].Add(crusierShip);
+			_ships = (List<Ship>)dataContract.ReadObject(fs);
 
-		_shipBoards[_players[0]] = new ShipBoard();
-		_attackBoards[_players[0]] = new AttackBoard();
+		}
 
-		_shipBoards[_players[1]] = new ShipBoard();
-		_attackBoards[_players[1]] = new AttackBoard();
+		_shipsPlayer.Add(_players[0], _ships);
+		_shipsPlayer.Add(_players[1], _ships);
+
+		_attackBoards[_players[0]] = new AttackBoard(_shipsPlayer[_players[1]]);
+		_shipBoards[_players[0]] = new ShipBoard(_shipsPlayer[_players[0]]);
 
 
 
-		// foreach (var player in _players)
-		// {
-		// 	_shipBoards.Add(player, new ShipBoard());
-		// 	_attackBoards.Add(player, new AttackBoard());
-		// 	_ships.Add(player, new List<IShip>());
-		// 	_cordinates.Add(player, new List<Cordinate>());
-		// }
+		_shipBoards[_players[1]] = new ShipBoard(_shipsPlayer[_players[1]]);
+		_attackBoards[_players[1]] = new AttackBoard(_shipsPlayer[_players[0]]);
 
-		_attackBoard = new AttackBoard();
-		_shipBoard = new ShipBoard();
 
 		_currentPlayer = _players[0];
 		_nextPlayer = _players[1];
 	}
-	
-	public void StartGame()
-	{
-		foreach (var player in _players)
-		{
-			PlaceShips(player);
-		}
-	}
-	
-	private void PlaceShips(IPlayer player)
+
+
+
+
+	public bool PlaceShipsOnBoard(IPlayer player, ShipType shipType,Cordinate from, Cordinate to)
 	{
 		var shipBoard = _shipBoards[player];
-		var ships = _ships[player];
+		var ships = _shipsPlayer[player];
 		foreach (var ship in ships)
 		{
-			var cordinates = _cordinates[player];
-			var from = cordinates[0];
-			var to = cordinates[1];
-			shipBoard.PlaceShip(ship, from, to);
+			if (ship._shipType == shipType)
+			{				
+				shipBoard.PlaceShip(ship,from,to);
+			}
 		}
+		return true;
 	}
 	public bool Attack(IPlayer player, Cordinate cordinate)
 	{
@@ -100,7 +81,7 @@ public class GameController
 		var attackBoard = _attackBoards[player];
 		return attackBoard.IsHit(cordinate);
 	}
-	
+
 	public bool ProcessShotResult(IPlayer player, Cordinate cordinate, bool isShotHit)
 	{
 		var attackBoard = _attackBoards[player];
@@ -111,41 +92,41 @@ public class GameController
 		}
 		return false;
 	}
-	
+
 	public IPlayer GetCurrentPlayer()
 	{
 		return _currentPlayer;
 	}
-	
+
 	public void SwitchPlayer()
 	{
 		var temp = _currentPlayer;
 		_currentPlayer = _nextPlayer;
 		_nextPlayer = temp;
 	}
-	
+
 	public void SetCurrentPlayer(IPlayer player)
 	{
 		_currentPlayer = player;
 	}
-	
+
 	public void SetNextPlayer(IPlayer player)
 	{
 		_nextPlayer = player;
 	}
-	
+
 	public List<IPlayer> GetPlayers()
 	{
 		return _players;
 	}
-	
+
 	public bool IsAllShipShunk(IPlayer player)
 	{
 		var shipBoard = _shipBoards[player];
 		return shipBoard.IsAllShinked();
-		
+
 	}
-	
+
 	private bool CheckWinner(IPlayer player)
 	{
 		var shipBoard = _shipBoards[player];
@@ -162,7 +143,7 @@ public class GameController
 		}
 		return null;
 	}
-	
+
 	public bool IsGameOver()
 	{
 		return GetWinner() != null;

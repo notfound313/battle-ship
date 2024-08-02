@@ -1,4 +1,8 @@
+using System.Runtime.Serialization;
+
 namespace Components.Battle.Ship;
+
+
 
 public class BattleShip : Ship
 {
@@ -7,4 +11,5 @@ public class BattleShip : Ship
 	{
 		
 	}
+	public BattleShip(){}
 }

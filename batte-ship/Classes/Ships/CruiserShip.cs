@@ -1,4 +1,7 @@
+using System.Runtime.Serialization;
+
 namespace Components.Battle.Ship;
+
 
 public class CruiserShip:Ship
 {
@@ -6,5 +9,8 @@ public class CruiserShip:Ship
 	base(ShipType.Cruiser, OccopationType.Empty, 3, shipName)
 	{
 		
+		
 	}
+	
+	public CruiserShip(){}
 }

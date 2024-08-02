@@ -1,13 +1,27 @@
-namespace Components.Battle.Ship;
+using System.Runtime.Serialization;
 
-public abstract class Ship : IShip
+namespace Components.Battle.Ship;
+// [KnownType(typeof(BattleShip))]
+// [KnownType(typeof(CarrierShip))]
+// [KnownType(typeof(DestroyerShip))]
+// [KnownType(typeof(SubmarineShip))]
+// [KnownType(typeof(CruiserShip))]
+// [KnownType(typeof(Cordinate))]
+[DataContract]
+public class Ship : IShip
 {
+	[DataMember]
 	private int _hits;
+	[DataMember]
 	public readonly int _sizeShip;
-	private readonly ShipType _shipType;
+	[DataMember]
+	public readonly ShipType _shipType;
+	[DataMember]
 	private OccopationType? _occopationType;
 	public Orientation Orientation { get; set; }
+	[DataMember]
 	private List<Cordinate> _cordinates;
+	[DataMember]
 	public string ShipName { get; set; }
 
 	public Ship(ShipType shipType, OccopationType occopationType, int sizeShip, string shipName)
@@ -19,6 +33,10 @@ public abstract class Ship : IShip
 		_hits = 0;
 
 	}
+	public Ship(){}
+
+	
+	
 	public int GetShipSize()
 	{
 		return _sizeShip;
