@@ -37,7 +37,6 @@ public class GameController
 		_shipBoards[_players[0]] = new ShipBoard(_shipsPlayer[_players[0]]);
 
 
-
 		_shipBoards[_players[1]] = new ShipBoard(_shipsPlayer[_players[1]]);
 		_attackBoards[_players[1]] = new AttackBoard(_shipsPlayer[_players[0]]);
 
