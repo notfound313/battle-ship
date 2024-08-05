@@ -6,9 +6,9 @@ namespace Components.Battle.Ship;
 public class Cordinate
 {
 	[DataMember]
-	public readonly int x;
+	public  int x {get;set;}
 	[DataMember]
-	public readonly int y;
+	public  int y {get;set;}
 	
 	public Cordinate(int x, int y)
 	{

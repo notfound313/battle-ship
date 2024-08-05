@@ -1,6 +1,6 @@
 namespace Components.Battle.Ship;
 
-public class AttackBoard: Board<IShip>
+public class AttackBoard: Board<Ship>
 {
 	
 	public AttackBoard(List<Ship> ship)
@@ -31,13 +31,17 @@ public class AttackBoard: Board<IShip>
 	{
 		return board[cordinate.x,cordinate.y] == null;
 	}
+	private Ship GetShipHasHit(Cordinate cordinate)
+	{
+		return board[cordinate.x,cordinate.y];
+	}
 	
 	public bool SetHit(Cordinate cordinate)
 	{
 		if(IsHit(cordinate))
 		{
-			board[cordinate.x,cordinate.y] = null;
-			return true;
+			var ship = GetShipHasHit(cordinate);
+			return ship.IsHit(cordinate);
 		}
 		return false;
 		
