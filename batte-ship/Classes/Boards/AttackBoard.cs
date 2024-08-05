@@ -29,18 +29,24 @@ public class AttackBoard: Board<Ship>
 	#region Attack Ship on Board	
 	public bool IsHit(Cordinate cordinate)
 	{
-		return board[cordinate.x,cordinate.y] == null;
+		return board[cordinate.x,cordinate.y] != null;
 	}
 	private Ship GetShipHasHit(Cordinate cordinate)
 	{
 		return board[cordinate.x,cordinate.y];
 	}
 	
+	public Ship GetShipHited(Cordinate cordinate)
+	{
+		return GetShipHasHit(cordinate);
+	}
+	
 	public bool SetHit(Cordinate cordinate)
 	{
-		if(IsHit(cordinate))
+		if(IsHit(cordinate)&&!GetShipHasHit(cordinate).IsShunk())	
 		{
 			var ship = GetShipHasHit(cordinate);
+			
 			return ship.IsHit(cordinate);
 		}
 		return false;

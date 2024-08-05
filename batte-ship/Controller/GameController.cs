@@ -70,9 +70,10 @@ public class GameController
 		var attackBoard = _attackBoards[player];
 		if (attackBoard.IsHit(cordinate))
 		{
-			SwitchPlayer();
 			return attackBoard.SetHit(cordinate);
 		}
+		
+		SwitchPlayer();
 		return false;
 	}
 	public bool HasPlayer(IPlayer player)
@@ -85,14 +86,15 @@ public class GameController
 		return attackBoard.IsHit(cordinate);
 	}
 
-	public bool ProcessShotResult(IPlayer player, Cordinate cordinate, bool isShotHit)
+	public bool ProcessShotResult(IPlayer player, Cordinate cordinate)
 	{
 		var attackBoard = _attackBoards[player];
-		if (isShotHit)
+		if (IsShotHit(player,cordinate))
 		{
-			attackBoard.SetHit(cordinate);
-			return true;
+			
+			return attackBoard.SetHit(cordinate);
 		}
+		SwitchPlayer();
 		return false;
 	}
 
@@ -113,10 +115,6 @@ public class GameController
 		_currentPlayer = player;
 	}
 
-	public void SetNextPlayer(IPlayer player)
-	{
-		_nextPlayer = player;
-	}
 
 	public List<IPlayer> GetPlayers()
 	{
@@ -127,6 +125,12 @@ public class GameController
 	{
 		return _shipBoards[player].GetBoard();
 		
+	}
+	
+	public Ship GetShipHasHit(Cordinate cordinate)
+	{
+		var attckBoard = _attackBoards[_currentPlayer];
+		return attckBoard.GetShipHited(cordinate);
 	}
 	
 	public  Ship[,] GetAttckBoard(IPlayer player)
@@ -147,7 +151,7 @@ public class GameController
 		var shipBoard = _shipBoards[player];
 		return shipBoard.IsAllShinked();
 	}
-	public IPlayer GetWinner()
+	private IPlayer GetWinner()
 	{
 		foreach (var player in _players)
 		{

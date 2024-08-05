@@ -8,21 +8,42 @@ public partial class Program
 	{
 		Begining();
 		Thread.Sleep(1000);
+		// Ship[,] ship = gm.GetAttckBoard(players[0]);
+		// List <Cordinate> cor = ship[0,0].GetCordinates();
+		// foreach (var item in cor)
+		// {
+		// 	Console.WriteLine($"{item.x} {item.y}");
+			
+		// }
+		// Cordinate cordinate = new(1, 0);
+		// Console.WriteLine(cor.Contains(cordinate));
+		
+		// Console.ReadLine();
 		while (GameStatus.End != _gameStatus)
 		{
 			IPlayer player = gm.GetCurrentPlayer();
 			DisplayShipBoard(gm, player);
+			Thread.Sleep(1000);
 			DisplayAttackBoard(gm, player);
 			Thread.Sleep(1000);
 			Console.WriteLine($"Player {player.Name} Turn");
 			var attackCordinate = AttackCordinate();
-			if(gm.Attack(player, attackCordinate))
+			if(gm.ProcessShotResult(player, attackCordinate))
 			{
-				DisplayAttackBoard(gm, player);
-				Console.WriteLine("You Hit");
+				Console.WriteLine($"Ship {gm.GetShipHasHit(attackCordinate).ShipName} is Hit at {attackCordinate.x} {attackCordinate.y}");	
+				
+				Thread.Sleep(1000);
 			}else 
 			{
 				Console.WriteLine("You Miss");
+				Thread.Sleep(1000);
+			}
+			if(gm.IsGameOver())
+			{
+				_gameStatus = GameStatus.End;
+				Console.WriteLine($"Player {player.Name} Win");
+				Thread.Sleep(1000);
+				break;
 			}
 			
 			
@@ -81,11 +102,32 @@ public partial class Program
 		{
 			for(int j = 0; j < ships.GetLength(1); j++)
 			{
-				Console.Write(". ");
+				if(ships[i,j] != null && ships[i,j].statusOccaption.ContainsValue(OccopationType.Hit))
+				{
+					if(DisplayHitShip(ships[i,j], new Cordinate(i,j)))
+					{
+						Console.Write("X ");
+					}else Console.Write(". ");
+					
+				}else Console.Write(". ");
+				 
 
 			}
 			Console.WriteLine();
 		}
+	}
+	
+	static bool DisplayHitShip(Ship ship, Cordinate cordinate)
+	{
+		foreach (var item in ship.statusOccaption.Keys)
+		{
+			if(item.x == cordinate.x && item.y == cordinate.y)
+			{
+				return true;
+				
+			}
+		}
+		return false;
 	}
 	
 	static Cordinate AttackCordinate()

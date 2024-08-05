@@ -17,12 +17,13 @@ public class Ship : IShip
 	[DataMember]
 	public readonly ShipType _shipType;
 	[DataMember]
-	private OccopationType? _occopationType;
+	public OccopationType _occopationType { get; set; }
 	public Orientation Orientation { get; set; }
 	[DataMember]
 	private List<Cordinate> _cordinates;
 	[DataMember]
 	public string ShipName { get; set; }
+	public Dictionary<Cordinate, OccopationType> statusOccaption = new ();
 
 	public Ship(ShipType shipType, OccopationType occopationType, int sizeShip, string shipName)
 	{
@@ -50,6 +51,11 @@ public class Ship : IShip
 		_cordinates = cordinates;
 		return true;
 	}
+	
+	private void SetstatusOccaption(Cordinate cordinate , OccopationType occopationType)
+	{
+		statusOccaption.Add(cordinate, occopationType);
+	}
 
 	public bool IsShunk()
 	{
@@ -63,10 +69,25 @@ public class Ship : IShip
 
 	public bool IsHit(Cordinate cordinate)
 	{
-		if (_cordinates.Contains(cordinate))
+		if (IsCordinateInShip(cordinate))
 		{
 			_hits++;
+			SetstatusOccaption(cordinate, OccopationType.Hit);
+			
 			return true;
+		}
+		return false;
+	}
+	
+	private bool IsCordinateInShip(Cordinate cordinate)
+	{
+		foreach (var cor in _cordinates)
+		{
+			if (cor.x == cordinate.x && cor.y == cordinate.y)
+			{
+				return true;
+			}
+			
 		}
 		return false;
 	}
