@@ -14,7 +14,8 @@ public class GameController
 	private IPlayer _nextPlayer;
 	private Dictionary<IPlayer, List<Ship>> _shipsPlayer = new();
 	private Dictionary<IPlayer, List<Cordinate>> _cordinates = new();
-	private List<Ship> _ships = new();
+	private List<Ship> _ships_p1 = new();
+	private List<Ship> _ships_p2 = new();
 
 
 
@@ -30,12 +31,12 @@ public class GameController
 		using (FileStream fs = new FileStream("ships.xml", FileMode.Open))
 		{
 
-			_ships = (List<Ship>)dataContract.ReadObject(fs);
-
+			_ships_p1 = (List<Ship>)dataContract.ReadObject(fs);
+			
 		}
 
-		_shipsPlayer.Add(_player1, _ships);
-		_shipsPlayer.Add(_player2, _ships);
+		_shipsPlayer.Add(_player1, _ships_p1);
+		_shipsPlayer.Add(_player2, _ships_p2);
 
 		_attackBoards[_player1] = new AttackBoard(_shipsPlayer[_player2]);
 		_shipBoards[_player1] = new ShipBoard(_shipsPlayer[_player1]);
