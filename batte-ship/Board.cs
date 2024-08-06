@@ -8,6 +8,7 @@ public abstract class Board<T>:IBoard
 	public  T[,] board = new T[10,10];
 	protected IPlayer player;
 	protected List<Ship> ships ;
+	protected List<Cordinate> missAttacks = new ();
 	
 	
 	public void SetListShips(List<Ship> ships)

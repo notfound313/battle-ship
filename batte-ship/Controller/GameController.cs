@@ -28,13 +28,13 @@ public class GameController
 		var knowTypes = new List<Type> { typeof(BattleShip), typeof(CruiserShip), typeof(DestroyerShip), typeof(SubmarineShip), typeof(CarrierShip), typeof(Cordinate) };
 		DataContractSerializer dataContract = new DataContractSerializer(typeof(List<Ship>), knowTypes);
 
-		using (FileStream fs = new FileStream("ships.xml", FileMode.Open))
+		using (FileStream fs = new FileStream(@".\ships.xml", FileMode.Open))
 		{
 
 			_ships_p1 = (List<Ship>)dataContract.ReadObject(fs);
 			
 		}
-			using (FileStream fs = new FileStream("ships.xml", FileMode.Open))
+			using (FileStream fs = new FileStream(@".\ships.xml", FileMode.Open))
 		{
 
 			_ships_p2 = (List<Ship>)dataContract.ReadObject(fs);
@@ -92,6 +92,11 @@ public class GameController
 		var attackBoard = _attackBoards[player];
 		return attackBoard.IsHit(cordinate);
 	}
+	public List<Cordinate> GetMissedAttacks(IPlayer player)
+	{
+		var attackBoard = _attackBoards[player];
+		return attackBoard.GetMissedAttacks();
+	}
 
 	public bool ProcessShotResult(IPlayer player, Cordinate cordinate)
 	{
@@ -102,6 +107,7 @@ public class GameController
 			return attackBoard.SetHit(cordinate);
 		}
 		SwitchPlayer();
+		attackBoard.SetMissAttack(cordinate);
 		return false;
 	}
 

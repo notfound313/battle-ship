@@ -49,10 +49,18 @@ public class AttackBoard: Board<Ship>
 			
 			return ship.IsHit(cordinate);
 		}
+		SetMissAttack(cordinate);
 		return false;
 		
 	}
 	  #endregion
-	
+	public void SetMissAttack(Cordinate cordinate)
+	{
+		missAttacks.Add(cordinate);
+	}
+	public List<Cordinate> GetMissedAttacks()
+	{
+		return missAttacks;
+	}
 }
  
