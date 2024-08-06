@@ -91,52 +91,72 @@ public partial class Program
 	}
 	
 	private static void ChangeCordinateShip(GameController gm, IPlayer player)
-	{
-		TypingTextAnimation($"Hi {player.Name} Are you wanna Change Cordinate your Ship");
-		bool change = false;
-		Console.Write("Enter Y/N: ");
-		string? input = Console.ReadLine().ToLower();
-		if (input == "y")
-		{
-			change = true;
-		}
-		
-		while(change)
-		{
-			DisplayShipBoard(gm, player);
-			TypingTextAnimation("Choose Your Ship Type");
-			DisplayTypeOfShip();
-			Console.Write("Enter num Your Ship Type: ");
-			int shipType = int.TryParse(Console.ReadLine(), out int shipTypeInt) ? shipTypeInt : 0;
-			ShipType shipTypeEnum = GetShipType(shipType);
-			Console.WriteLine("Enter Cordinate From: ");
-			AttackCordinate(out Cordinate cordinateTo);
-			Console.WriteLine("Enter Cordinate To: ");
-			AttackCordinate(out Cordinate cordinateFrom);
-			bool status = gm.PlaceShipsOnBoard(player, shipTypeEnum, cordinateTo, cordinateFrom);
-			if (!status)
-			{
-				Console.WriteLine("Invalid Cordinate");
-				Console.WriteLine("Try Again");
-				Console.WriteLine();
-				Thread.Sleep(2000);
-			}else
-			{
-				DisplayShipBoard(gm, player);
-				Console.WriteLine("Ship is Placed");
-				Console.WriteLine();
-				Console.WriteLine("Still Wanna Change Cordinate again ?");
-				Console.Write("Enter Y/N: ");
-				input = Console.ReadLine().ToLower();
-				if (input == "y")
-				{
-					change = true;
-				}else change = false;
-				
-			}
-			
-		}
-	}
+{
+    TypingTextAnimation($"Hi {player.Name}, do you want to change the coordinates of your ship?");
+    
+    while (true)
+    {
+        if (GetYesOrNoInput("Enter Y/N: "))
+        {
+            while (true)
+            {
+                TypingTextAnimation("Choose Your Ship Type");
+                DisplayTypeOfShip();
+
+                int shipType = GetShipTypeFromInput();
+                ShipType shipTypeEnum = GetShipType(shipType);
+
+                DisplayShipBoard(gm, player);
+                Ship ship = gm.GetOneShip(player, shipTypeEnum);
+                
+                Console.WriteLine();
+                Console.WriteLine($"Input Coordinates to fit the size of the ship ({shipTypeEnum}, Size: {ship._sizeShip})");
+
+                Cordinate cordinateFrom = GetCoordinate("Enter Coordinate From: ");
+                Cordinate cordinateTo = GetCoordinate("Enter Coordinate To: ");
+                
+                if (gm.PlaceShipsOnBoard(player, shipTypeEnum, cordinateFrom, cordinateTo))
+                {
+                    DisplayShipBoard(gm, player);
+                    Console.WriteLine("Ship is Placed\n");
+                }
+                else
+                {
+                    Console.WriteLine("Invalid Coordinate. Try Again.\n");
+                    Thread.Sleep(2000);
+                    continue;
+                }
+                
+                break; // Exit the inner loop if ship placement is successful
+            }
+        }
+        else
+        {
+            break; // Exit the outer loop if the user doesn't want to change coordinates
+        }
+    }
+}
+
+private static bool GetYesOrNoInput(string prompt)
+{
+    Console.Write(prompt);
+    string input = Console.ReadLine()?.ToLower();
+    return input == "y";
+}
+
+private static int GetShipTypeFromInput()
+{
+    Console.Write("Enter number of your ship type: ");
+    return int.TryParse(Console.ReadLine(), out int shipType) ? shipType : 0;
+}
+
+private static Cordinate GetCoordinate(string prompt)
+{
+    Console.WriteLine(prompt);
+    AttackCordinate(out Cordinate coordinate);
+    return coordinate;
+}
+
 
 	public static void Begining()
 	{
@@ -167,67 +187,58 @@ public partial class Program
 
 	}
 
-	public static void DisplayShipBoard(GameController gm, IPlayer player)
-{
-    Console.WriteLine($"\nThe {player.Name} ShipBoard ");
-
-    Ship[,] ships = gm.GetShipBoard(player);
-
-    for (int i = 0; i < ships.GetLength(0); i++)
+	 public static void DisplayShipBoard(GameController gm, IPlayer player)
     {
-        for (int j = 0; j < ships.GetLength(1); j++)
+        Console.WriteLine($"\nThe {player.Name} Ship Board");
+        DisplayBoard(gm.GetShipBoard(player), gm, true);
+    }
+
+    public static void DisplayAttackBoard(GameController gm, IPlayer player)
+    {
+        Console.WriteLine($"\nThe {player.Name} Attack Board");
+        DisplayBoard(gm.GetShipBoard(player), gm, false);
+    }
+
+    private static void DisplayBoard(Ship[,] board, GameController gm, bool isShipBoard)
+    {
+        // Print column numbers
+        Console.Write("  ");
+        for (int y = 0; y < board.GetLength(1); y++)
         {
-            var cellRepresentation = GetCellRepresentationBoard(gm, ships[i, j], new Cordinate(i, j));
-            Console.Write(cellRepresentation + " ");
+            Console.Write(y.ToString() + " ");
         }
         Console.WriteLine();
-    }
-}
 
-private static string GetCellRepresentationBoard(GameController gm, Ship ship, Cordinate coord)
-{
-    if (ship == null)
+        // Print board rows
+        for (int i = 0; i < board.GetLength(0); i++)
+        {
+            Console.Write(i.ToString() + " ");
+            for (int j = 0; j < board.GetLength(1); j++)
+            {
+                var coord = new Cordinate(i, j);
+                Console.Write((isShipBoard ? GetCellRepresentationBoard(gm, board[i, j], coord) : GetCellRepresentation(gm, board[i, j], coord)) + " ");
+            }
+            Console.WriteLine();
+        }
+    }
+
+    private static string GetCellRepresentationBoard(GameController gm, Ship ship, Cordinate coord)
     {
+        if (ship == null)
+        {
+            return ValidMissAttack(gm, coord) ? "M" : ".";
+        }
+        return ship.statusOccaption.ContainsValue(OccopationType.Hit) ? (DisplayHitShip(ship, coord) ? "X" : _shipSymbol[ship._shipType]) : _shipSymbol[ship._shipType];
+    }
+
+    private static string GetCellRepresentation(GameController gm, Ship ship, Cordinate coord)
+    {
+        if (ship != null && ship.statusOccaption.ContainsValue(OccopationType.Hit))
+        {
+            return DisplayHitShip(ship, coord) ? "X" : ".";
+        }
         return ValidMissAttack(gm, coord) ? "M" : ".";
     }
-    else
-    {
-        if (ship.statusOccaption.ContainsValue(OccopationType.Hit))
-        {
-            return DisplayHitShip(ship, coord) ? "X" : _shipSymbol[ship._shipType];
-        }
-        return _shipSymbol[ship._shipType];
-    }
-}
-
-
-	public static void DisplayAttackBoard(GameController gm, IPlayer player)
-{
-    Console.WriteLine($"\nThe {player.Name} AttackBoard ");
-
-    Ship[,] ships = gm.GetAttckBoard(player);
-
-    for (int i = 0; i < ships.GetLength(0); i++)
-    {
-        for (int j = 0; j < ships.GetLength(1); j++)
-        {
-            Console.Write(GetCellRepresentation(gm, ships[i, j], new Cordinate(i, j)) + " ");
-        }
-        Console.WriteLine();
-    }
-}
-
-private static string GetCellRepresentation(GameController gm, Ship ship, Cordinate coord)
-{
-    if (ship != null && ship.statusOccaption.ContainsValue(OccopationType.Hit))
-    {
-        return DisplayHitShip(ship, coord) ? "X" : ".";
-    }
-    else
-    {
-        return ValidMissAttack(gm, coord) ? "M" : ".";
-    }
-}
 
 
 	static bool DisplayHitShip(Ship ship, Cordinate cordinate)
@@ -257,39 +268,47 @@ private static string GetCellRepresentation(GameController gm, Ship ship, Cordin
 	}
 
 	static void AttackCordinate(out Cordinate attackCordinate)
-	{
-		attackCordinate = new();
-		string cor="";
-		do
-		{
-			Console.Write("Enter Row: ");
-			cor = Console.ReadLine();
-			if(!IsValidCordinate(cor))
-			{
-				Console.WriteLine("Enter Valid Cordinate");
-			}else 
-			{
-				attackCordinate.x = int.Parse(cor);
-				break;
-			}
-		}while(!IsValidCordinate(cor));
-		
-		do
-		{
-			Console.Write("Enter Col: ");
-			cor = Console.ReadLine();
-			if (!IsValidCordinate(cor))
-			{
-				Console.WriteLine("Enter Valid Cordinate");
-			}
-			else
-			{
-				attackCordinate.y = int.Parse(cor);
-				break;
-			}
-		}while (!IsValidCordinate(cor));
+{
+    attackCordinate = new Cordinate();
+    string input;
+    
+    while (true)
+    {
+        Console.Write("Enter Row and Column (e.g., 5 7): ");
+        input = Console.ReadLine();
 
-	}
+        if (TryParseCoordinates(input, out int row, out int col))
+        {
+            attackCordinate.x = row;
+            attackCordinate.y = col;
+            break;
+        }
+        else
+        {
+            Console.WriteLine("Enter Valid Coordinates in the format 'Row Col' or index Out Of bound");
+        }
+    }
+}
+
+private static bool TryParseCoordinates(string input, out int row, out int col)
+{
+    row = 0;
+    col = 0;
+    var parts = input.Split(' ');
+
+    if (parts.Length == 2 &&
+        int.TryParse(parts[0], out row) &&
+        int.TryParse(parts[1], out col))
+    {
+		if(row < 10 && row >= 0 &&
+		col < 10 && col >= 0) 
+		{
+			return true;
+		}
+    }
+
+    return false;
+}
 	
 	public static bool IsValidCordinate(string cordinate)
 	{

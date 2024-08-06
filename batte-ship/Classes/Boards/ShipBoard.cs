@@ -84,22 +84,30 @@ public class ShipBoard : Board<Ship>
 
 	// Atur koordinat kapal
 	
-	if(ship.setCordinates(CalculateShipCordinates(from, to)))
-	{
-		for(int x= 0; x < board.GetLength(0); x++)
-		{
-			for(int y = 0; y < board.GetLength(1); y++)
-			{
-				if(board[x,y] == ship)
-				{
-					board[x,y] = null;
-				}
-			}
-		}
-		
-		SetShipInBoard();
-	}
-	return ship.setCordinates(CalculateShipCordinates(from, to));
+	if (ship.setCordinates(CalculateShipCordinates(from, to)))
+{
+    // Menghapus kapal dari papan
+    RemoveShipFromBoard(ship);
+
+    // Menyusun kapal di papan
+    SetShipInBoard();
+}
+	
+
+	return (ship.setCordinates(CalculateShipCordinates(from, to)));
+}
+private void RemoveShipFromBoard(Ship ship)
+{
+    for (int x = 0; x < board.GetLength(0); x++)
+    {
+        for (int y = 0; y < board.GetLength(1); y++)
+        {
+            if (board[x, y] == ship)
+            {
+                board[x, y] = null;
+            }
+        }
+    }
 }
 
 	
@@ -174,4 +182,14 @@ public class ShipBoard : Board<Ship>
 	
 
 	#endregion
+
+	public Ship GetShip(ShipType shipType){
+		foreach (var item in ships)
+		{
+			if(item._shipType==shipType)	{
+				return item;
+			}		
+		}
+		return null;
+	}
 }
