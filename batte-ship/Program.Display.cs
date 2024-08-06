@@ -7,18 +7,29 @@ public partial class Program
 {
 	public static void Display(GameController gm, List<IPlayer> players)
 	{
+		
+		
+		foreach (var py in players)
+		{
+			ChangeCordinateShip(gm,py);	
+		}				
+		
 		Begining();
+		Console.WriteLine();
 		Thread.Sleep(1000);
+		IPlayer player = gm.GetCurrentPlayer();
+		Console.WriteLine($"Player {player.Name} First");
+		Thread.Sleep(2000);
 
 		while (GameStatus.End != _gameStatus)
-		{
-			IPlayer player = gm.GetCurrentPlayer();
+		{			
+			player = gm.GetCurrentPlayer();				
 			DisplayShipBoard(gm, player);
 			Thread.Sleep(1000);
 			DisplayAttackBoard(gm, player);
 			Thread.Sleep(1000);
 			
-			Console.WriteLine($"Player {player.Name} Turn");
+			TypingTextAnimation($"Player {player.Name} Turn");
 			AttackCordinate(out Cordinate attackCordinate);
 			if (gm.ProcessShotResult(player, attackCordinate))
 			{
@@ -45,13 +56,86 @@ public partial class Program
 
 
 		}
-
-
-
-
-
-
-
+		
+		
+	}
+	
+	static void DisplayTypeOfShip()
+	{
+		int count = 1;
+		foreach (var type in Enum.GetValues(typeof(ShipType)))
+		{
+			Console.WriteLine($"{count}. {type} '{_shipSymbol[(ShipType)type]}'");
+			count++;
+		}
+	}
+	
+	private static ShipType GetShipType(int index)
+	{
+		switch (index)
+		{
+			case 1:
+				return ShipType.Battleship;
+			case 2:
+				return ShipType.Cruiser;
+			case 3:
+				return ShipType.Destroyer;
+			case 4:
+				return ShipType.Submarine;
+			case 5:
+				return ShipType.Carrier;
+			default:
+				return ShipType.Battleship;
+		}
+		
+	}
+	
+	private static void ChangeCordinateShip(GameController gm, IPlayer player)
+	{
+		TypingTextAnimation($"Hi {player.Name} Are you wanna Change Cordinate your Ship");
+		bool change = false;
+		Console.Write("Enter Y/N: ");
+		string? input = Console.ReadLine().ToLower();
+		if (input == "y")
+		{
+			change = true;
+		}
+		
+		while(change)
+		{
+			DisplayShipBoard(gm, player);
+			TypingTextAnimation("Choose Your Ship Type");
+			DisplayTypeOfShip();
+			Console.Write("Enter num Your Ship Type: ");
+			int shipType = int.TryParse(Console.ReadLine(), out int shipTypeInt) ? shipTypeInt : 0;
+			ShipType shipTypeEnum = GetShipType(shipType);
+			Console.WriteLine("Enter Cordinate From: ");
+			AttackCordinate(out Cordinate cordinateTo);
+			Console.WriteLine("Enter Cordinate To: ");
+			AttackCordinate(out Cordinate cordinateFrom);
+			bool status = gm.PlaceShipsOnBoard(player, shipTypeEnum, cordinateTo, cordinateFrom);
+			if (!status)
+			{
+				Console.WriteLine("Invalid Cordinate");
+				Console.WriteLine("Try Again");
+				Console.WriteLine();
+				Thread.Sleep(2000);
+			}else
+			{
+				DisplayShipBoard(gm, player);
+				Console.WriteLine("Ship is Placed");
+				Console.WriteLine();
+				Console.WriteLine("Still Wanna Change Cordinate again ?");
+				Console.Write("Enter Y/N: ");
+				input = Console.ReadLine().ToLower();
+				if (input == "y")
+				{
+					change = true;
+				}else change = false;
+				
+			}
+			
+		}
 	}
 
 	public static void Begining()
@@ -84,79 +168,67 @@ public partial class Program
 	}
 
 	public static void DisplayShipBoard(GameController gm, IPlayer player)
-	{
+{
+    Console.WriteLine($"\nThe {player.Name} ShipBoard ");
 
-		Console.WriteLine();
-		Console.WriteLine($"The {player.Name} ShipBord ");
+    Ship[,] ships = gm.GetShipBoard(player);
 
+    for (int i = 0; i < ships.GetLength(0); i++)
+    {
+        for (int j = 0; j < ships.GetLength(1); j++)
+        {
+            var cellRepresentation = GetCellRepresentationBoard(gm, ships[i, j], new Cordinate(i, j));
+            Console.Write(cellRepresentation + " ");
+        }
+        Console.WriteLine();
+    }
+}
 
-		Ship[,] ships = gm.GetShipBoard(player);
-		for (int i = 0; i < ships.GetLength(0); i++)
-		{
-			for (int j = 0; j < ships.GetLength(1); j++)
-			{
-				if (ships[i, j] == null)
-				{
-					if (ValidMissAttack(gm, new Cordinate(i, j)))
-					{
-						Console.Write("M ");
-					}else Console.Write(". ");
-				}
-				else
-				{
-					if (ships[i, j].statusOccaption.ContainsValue(OccopationType.Hit))
-					{
-						if (DisplayHitShip(ships[i, j], new Cordinate(i, j)))
-						{
-							Console.Write("X ");
-						}else Console.Write($"{_shipSymbol[ships[i, j]._shipType]} ");
-					
-					}					
-					else
-					{
-						Console.Write($"{_shipSymbol[ships[i, j]._shipType]} ");
-					}
-				} 
+private static string GetCellRepresentationBoard(GameController gm, Ship ship, Cordinate coord)
+{
+    if (ship == null)
+    {
+        return ValidMissAttack(gm, coord) ? "M" : ".";
+    }
+    else
+    {
+        if (ship.statusOccaption.ContainsValue(OccopationType.Hit))
+        {
+            return DisplayHitShip(ship, coord) ? "X" : _shipSymbol[ship._shipType];
+        }
+        return _shipSymbol[ship._shipType];
+    }
+}
 
-			}
-			Console.WriteLine();
-		}
-
-	}
 
 	public static void DisplayAttackBoard(GameController gm, IPlayer player)
-	{
-		Console.WriteLine();
+{
+    Console.WriteLine($"\nThe {player.Name} AttackBoard ");
 
-		Console.WriteLine($"The {player.Name} Attack Board ");
+    Ship[,] ships = gm.GetAttckBoard(player);
 
-		Ship[,] ships = gm.GetAttckBoard(player);
-		for (int i = 0; i < ships.GetLength(0); i++)
-		{
-			for (int j = 0; j < ships.GetLength(1); j++)
-			{
-				if (ships[i, j] != null && ships[i, j].statusOccaption.ContainsValue(OccopationType.Hit))
-				{
-					if (DisplayHitShip(ships[i, j], new Cordinate(i, j)))
-					{
-						Console.Write("X ");
-					}
-					else Console.Write(". ");
+    for (int i = 0; i < ships.GetLength(0); i++)
+    {
+        for (int j = 0; j < ships.GetLength(1); j++)
+        {
+            Console.Write(GetCellRepresentation(gm, ships[i, j], new Cordinate(i, j)) + " ");
+        }
+        Console.WriteLine();
+    }
+}
 
-				}
-				else 
-				{
-					if(ValidMissAttack(gm, new Cordinate(i, j)))
-					{
-						Console.Write("M ");
-					}else Console.Write(". ");
-				}
+private static string GetCellRepresentation(GameController gm, Ship ship, Cordinate coord)
+{
+    if (ship != null && ship.statusOccaption.ContainsValue(OccopationType.Hit))
+    {
+        return DisplayHitShip(ship, coord) ? "X" : ".";
+    }
+    else
+    {
+        return ValidMissAttack(gm, coord) ? "M" : ".";
+    }
+}
 
-
-			}
-			Console.WriteLine();
-		}
-	}
 
 	static bool DisplayHitShip(Ship ship, Cordinate cordinate)
 	{

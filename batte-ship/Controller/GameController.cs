@@ -2,6 +2,9 @@ using System.Runtime.Serialization;
 using System.Collections.Generic;
 
 using Components.Player;
+using System.Runtime.Serialization.Formatters.Binary;
+using System.Text.Json;
+using System.Text.Json.Serialization;
 namespace Components.Battle.Ship;
 
 public class GameController
@@ -21,10 +24,13 @@ public class GameController
 
 	public GameController(List<IPlayer> players)
 	{
+		//set players in list
 		_players = players;
-		
+		//set players for each player
 		_player1 = _players[0];
 		_player2 = _players[1];
+		
+		//read cordinates ship from file
 		var knowTypes = new List<Type> { typeof(BattleShip), typeof(CruiserShip), typeof(DestroyerShip), typeof(SubmarineShip), typeof(CarrierShip), typeof(Cordinate) };
 		DataContractSerializer dataContract = new DataContractSerializer(typeof(List<Ship>), knowTypes);
 
@@ -40,10 +46,12 @@ public class GameController
 			_ships_p2 = (List<Ship>)dataContract.ReadObject(fs);
 			
 		}
-
+		
+		//set ships for each player
 		_shipsPlayer.Add(_player1, _ships_p1);
 		_shipsPlayer.Add(_player2, _ships_p2);
-
+		
+		//set attack boards and ship boards for each player
 		_attackBoards[_player1] = new AttackBoard(_shipsPlayer[_player2]);
 		_shipBoards[_player1] = new ShipBoard(_shipsPlayer[_player1]);
 
@@ -51,7 +59,7 @@ public class GameController
 		_shipBoards[_player2] = new ShipBoard(_shipsPlayer[_player2]);
 		_attackBoards[_player2] = new AttackBoard(_shipsPlayer[_player1]);
 
-
+		//set current player and next player
 		_currentPlayer =_player1;
 		_nextPlayer = _player2;
 	}
@@ -70,7 +78,7 @@ public class GameController
 				shipBoard.PlaceShip(ship,from,to);
 			}
 		}
-		return true;
+		return false;
 	}
 	public bool Attack(IPlayer player, Cordinate cordinate)
 	{
@@ -116,7 +124,7 @@ public class GameController
 		return _currentPlayer;
 	}
 
-	public void SwitchPlayer()
+	private void SwitchPlayer()
 	{
 		var temp = _currentPlayer;
 		_currentPlayer = _nextPlayer;
@@ -182,3 +190,4 @@ public class GameController
 	}
 
 }
+
