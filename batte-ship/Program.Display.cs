@@ -8,17 +8,7 @@ public partial class Program
 	{
 		Begining();
 		Thread.Sleep(1000);
-		// Ship[,] ship = gm.GetAttckBoard(players[0]);
-		// List <Cordinate> cor = ship[0,0].GetCordinates();
-		// foreach (var item in cor)
-		// {
-		// 	Console.WriteLine($"{item.x} {item.y}");
-			
-		// }
-		// Cordinate cordinate = new(1, 0);
-		// Console.WriteLine(cor.Contains(cordinate));
 		
-		// Console.ReadLine();
 		while (GameStatus.End != _gameStatus)
 		{
 			IPlayer player = gm.GetCurrentPlayer();
@@ -41,8 +31,12 @@ public partial class Program
 			if(gm.IsGameOver())
 			{
 				_gameStatus = GameStatus.End;
+				Console.WriteLine();
+				
 				Console.WriteLine($"Player {player.Name} Win");
+				
 				Thread.Sleep(1000);
+				Closing();
 				break;
 			}
 			
@@ -61,10 +55,26 @@ public partial class Program
 	{
 		Console.WriteLine("Game Starting");
 		Thread.Sleep(1000);
-		Console.WriteLine("Its Time you show up your skill");
-		Thread.Sleep(1000);
-		Console.WriteLine("Lets Start Beat them");
+		TypingTextAnimation("Its Time you show up your skill");
 		
+		Thread.Sleep(1000);
+		TypingTextAnimation("Lets Start Beat them");
+				
+		
+	}
+
+	private static void Closing(){
+		string textCongrut = "Congratulation you did it !!!!!!";
+		TypingTextAnimation(textCongrut);
+
+	}
+	private static void TypingTextAnimation(string text){
+		for(int i = 0; i< text.Length;i++){
+			Console.Write(text[i]);
+			Thread.Sleep(200);
+		}
+		Console.WriteLine();
+
 	}
 	
 	public static void DisplayShipBoard(GameController gm, IPlayer player)

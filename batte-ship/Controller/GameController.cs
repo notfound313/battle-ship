@@ -34,6 +34,12 @@ public class GameController
 			_ships_p1 = (List<Ship>)dataContract.ReadObject(fs);
 			
 		}
+			using (FileStream fs = new FileStream("ships.xml", FileMode.Open))
+		{
+
+			_ships_p2 = (List<Ship>)dataContract.ReadObject(fs);
+			
+		}
 
 		_shipsPlayer.Add(_player1, _ships_p1);
 		_shipsPlayer.Add(_player2, _ships_p2);
