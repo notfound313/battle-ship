@@ -84,7 +84,21 @@ public class ShipBoard : Board<Ship>
 
 	// Atur koordinat kapal
 	
-
+	if(ship.setCordinates(CalculateShipCordinates(from, to)))
+	{
+		for(int x= 0; x < board.GetLength(0); x++)
+		{
+			for(int y = 0; y < board.GetLength(1); y++)
+			{
+				if(board[x,y] == ship)
+				{
+					board[x,y] = null;
+				}
+			}
+		}
+		
+		SetShipInBoard();
+	}
 	return ship.setCordinates(CalculateShipCordinates(from, to));
 }
 

@@ -74,10 +74,13 @@ public class GameController
 		foreach (var ship in ships)
 		{
 			if (ship._shipType == shipType)
-			{				
-				shipBoard.PlaceShip(ship,from,to);
+			{	
+							
+				return shipBoard.PlaceShip(ship,from,to);
+				
 			}
 		}
+		
 		return false;
 	}
 	public bool Attack(IPlayer player, Cordinate cordinate)
