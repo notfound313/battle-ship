@@ -191,80 +191,95 @@ public partial class Program
 
 	public static void DisplayShipBoard(GameController gm, IPlayer player)
 	{
-		Console.WriteLine($"\nThe {player.Name} Ship Board");
-		DisplayBoard(gm.GetShipBoard(player), gm, true);
-	}
+		Console.WriteLine();
+		Console.WriteLine($"The {player.Name} Ship Board");
 
-	public static void DisplayAttackBoard(GameController gm, IPlayer player)
-	{
-		Console.WriteLine($"\nThe {player.Name} Attack Board");
-		DisplayBoard(gm.GetShipBoard(player), gm, false);
-	}
-
-	private static void DisplayBoard(Ship[,] board, GameController gm, bool isShipBoard)
-	{
-		// Print column headers
-		Console.Write("    ");
-		for (int y = 0; y < board.GetLength(1); y++)
+		Ship[,] ships = gm.GetShipBoard(player);
+		int rows = ships.GetLength(0);
+		int cols = ships.GetLength(1);
+		Console.Write("   ");
+		for (int i = 0; i < cols; i++)
 		{
-			Console.Write($"{y,2} "); // Align columns
-
+			Console.Write($"{i}  ");
 		}
-		Console.Write("\n");
-
-		// Print top border
-		Console.Write("    ");
-		for (int x = 0; x < board.GetLength(1); x++)
+		Console.WriteLine();
+		
+		for (int i = 0; i < cols; i++)
 		{
 			Console.Write("-- ");
 		}
-		Console.Write("\n");
+		Console.WriteLine();
 
-		// Print board rows
-		for (int i = 0; i < board.GetLength(0); i++)
+		for (int row = 0; row < rows; row++)
 		{
-			Console.Write($"{i,2} | ");
-			for (int j = 0; j < board.GetLength(1); j++)
+			Console.Write($"{row} |");
+			for (int col = 0; col < cols; col++)
 			{
-				var coord = new Cordinate(i, j);
-				Console.Write((isShipBoard ? GetCellRepresentationBoard(gm, board[i, j], coord) : GetCellRepresentation(gm, board[i, j], coord)) + "  ");
+				char symbol = GetShipSymbol(ships[row, col], new Cordinate(row, col), gm);
+				Console.Write($"{symbol}  ");
 			}
 			Console.WriteLine();
 		}
 	}
 
-	private static string GetCellRepresentationBoard(GameController gm, Ship ship, Cordinate coord)
+	private static char GetShipSymbol(Ship ship, Cordinate coord, GameController gm)
 	{
 		if (ship == null)
 		{
-			// Return "M" if valid miss attack, otherwise "."
-			return ValidMissAttack(gm, coord) ? "M" : ".";
+			return ValidMissAttack(gm, coord, false) ? 'M' : '.';
 		}
 
-		// Check if the ship has been hit
 		bool isHit = ship.statusOccaption.ContainsValue(OccopationType.Hit);
-
-		// Determine the symbol to return based on whether the ship is hit
-		if (isHit)
+		if (isHit && DisplayHitShip(ship, coord))
 		{
-			bool displayHit = DisplayHitShip(ship, coord);
-			return displayHit ? "X" : _shipSymbol[ship._shipType];
+			return 'X';
 		}
 
-		// Return the symbol for the ship type if not hit
 		return _shipSymbol[ship._shipType];
 	}
 
+	public static void DisplayAttackBoard(GameController gm, IPlayer player)
+	{
+		Console.WriteLine();
+		Console.WriteLine($"The {player.Name} Attack Board");
 
-	private static string GetCellRepresentation(GameController gm, Ship ship, Cordinate coord)
+		Ship[,] board = gm.GetAttckBoard(player);
+		int rows = board.GetLength(0);
+		int cols = board.GetLength(1);
+		Console.Write("   ");
+		for (int i = 0; i < cols; i++)
+		{
+			Console.Write($"{i}  ");
+		}
+		Console.WriteLine();
+		Console.Write("   ");
+		for (int i = 0; i < cols; i++)
+		{
+			Console.Write("-- ");
+		}
+		Console.WriteLine();
+
+		for (int row = 0; row < rows; row++)
+		{
+			Console.Write($"{row} |");
+			for (int col = 0; col < cols; col++)
+			{
+				char symbol = GetAttackBoardSymbol(board[row, col], new Cordinate(row, col), gm);
+				Console.Write($"{symbol}  ");
+			}
+			Console.WriteLine();
+		}
+	}
+
+	private static char GetAttackBoardSymbol(Ship ship, Cordinate coord, GameController gm)
 	{
 		if (ship != null && ship.statusOccaption.ContainsValue(OccopationType.Hit))
 		{
-			return DisplayHitShip(ship, coord) ? "X" : ".";
+			return DisplayHitShip(ship, coord) ? 'X' : '.';
 		}
-		return ValidMissAttack(gm, coord) ? "M" : ".";
-	}
 
+		return ValidMissAttack(gm, coord, true) ? 'M' : '.';
+	}
 
 	static bool DisplayHitShip(Ship ship, Cordinate cordinate)
 	{
@@ -278,9 +293,22 @@ public partial class Program
 		}
 		return false;
 	}
-	static bool ValidMissAttack(GameController gm, Cordinate cordinate)
+	static bool ValidMissAttack(GameController gm, Cordinate cordinate, bool isAttackBorad)
 	{
-		foreach (var item in gm.GetMissedAttacks(gm.GetCurrentPlayer()))
+
+		if (isAttackBorad)
+		{
+			foreach (var item in gm.GetMissedAttackBoard(gm.GetCurrentPlayer()))
+			{
+				if (item.x == cordinate.x && item.y == cordinate.y)
+				{
+					return true;
+				}
+
+			}
+			return false;
+		}
+		foreach (var item in gm.GetMissedShipBoard(gm.GetCurrentPlayer()))
 		{
 			if (item.x == cordinate.x && item.y == cordinate.y)
 			{

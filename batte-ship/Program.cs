@@ -5,14 +5,14 @@ using Components.Player;
 public partial class Program
 {
 	private static GameStatus _gameStatus = GameStatus.Start;
-	private static Dictionary<ShipType, string> _shipSymbol = new()
+	private static Dictionary<ShipType, char> _shipSymbol = new()
 
 	{
-		{ShipType.Battleship,"B"},
-		{ShipType.Cruiser, "C"},
-		{ShipType.Destroyer,"D"},
-		{ShipType.Submarine,"S"},
-		{ShipType.Carrier,"A"}
+		{ShipType.Battleship,'B'},
+		{ShipType.Cruiser, 'C'},
+		{ShipType.Destroyer,'D'},
+		{ShipType.Submarine,'S'},
+		{ShipType.Carrier,'A'}
 
 	};
 

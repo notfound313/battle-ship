@@ -86,11 +86,11 @@ public class ShipBoard : Board<Ship>
 	
 	if (ship.setCordinates(CalculateShipCordinates(from, to)))
 {
-    // Delete ship on the board
-    RemoveShipFromBoard(ship);
+	// Delete ship on the board
+	RemoveShipFromBoard(ship);
 
-    // Set ship on the board
-    SetShipInBoard();
+	// Set ship on the board
+	SetShipInBoard();
 }
 	
 
@@ -98,16 +98,16 @@ public class ShipBoard : Board<Ship>
 }
 private void RemoveShipFromBoard(Ship ship)
 {
-    for (int x = 0; x < board.GetLength(0); x++)
-    {
-        for (int y = 0; y < board.GetLength(1); y++)
-        {
-            if (board[x, y] == ship)
-            {
-                board[x, y] = null;
-            }
-        }
-    }
+	for (int x = 0; x < board.GetLength(0); x++)
+	{
+		for (int y = 0; y < board.GetLength(1); y++)
+		{
+			if (board[x, y] == ship)
+			{
+				board[x, y] = null;
+			}
+		}
+	}
 }
 
 	
@@ -191,5 +191,9 @@ private void RemoveShipFromBoard(Ship ship)
 			}		
 		}
 		return null;
+	}
+	public void SetMissAttack(Cordinate cordinate)
+	{
+		missAttacks.Add(cordinate);
 	}
 }

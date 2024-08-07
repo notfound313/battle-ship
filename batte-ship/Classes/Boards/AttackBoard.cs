@@ -58,9 +58,9 @@ public class AttackBoard: Board<Ship>
 	{
 		missAttacks.Add(cordinate);
 	}
-	public List<Cordinate> GetMissedAttacks()
-	{
-		return missAttacks;
-	}
+	// public List<Cordinate> GetMissedAttacks()
+	// {
+	// 	return missAttacks;
+	// }
 }
  

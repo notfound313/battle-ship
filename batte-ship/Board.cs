@@ -16,7 +16,7 @@ public abstract class Board<T>:IBoard
 		this.ships = ships;
 	}
 	
-	public bool isOccopied(Cordinate cordinate)
+	public bool IsOccopied(Cordinate cordinate)
 	{
 		return ships.Exists(ship => ship.GetCordinates().Contains(cordinate));
 	}
@@ -61,8 +61,12 @@ public abstract class Board<T>:IBoard
 	
 	
 	
-	public int getBoardSize()
+	public int GetBoardSize()
 	{
 		return board.Length;
+	}
+	public List<Cordinate> GetMissedAttacks()
+	{
+		return missAttacks;
 	}
 }

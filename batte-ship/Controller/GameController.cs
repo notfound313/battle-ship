@@ -17,8 +17,7 @@ public class GameController
 	private IPlayer _nextPlayer;
 	private Dictionary<IPlayer, List<Ship>> _shipsPlayer = new();
 	private Dictionary<IPlayer, List<Cordinate>> _cordinates = new();
-	private List<Ship> _ships_p1 = new();
-	private List<Ship> _ships_p2 = new();
+	
 
 
 
@@ -46,19 +45,16 @@ public class GameController
 		// try
 		// {
 		// 	// read XML once.
-			
+		// 	List<Ship> ship;	
 		// 	using (FileStream fs = new FileStream(@".\ships.xml", FileMode.Open))
 		// 	{
-		// 		_ships_p1 = (List<Ship>)dataContract.ReadObject(fs);
+		// 		ship = (List<Ship>)dataContract.ReadObject(fs);
 		// 	}
 
 		// 	// duplicate data
-		// 	// _ships_p1 = new List<Ship>(ship);
-		// 	// _ships_p2 = new List<Ship>(ship);
-		// 		using (FileStream fs = new FileStream(@".\ships.xml", FileMode.Open))
-		// 	{
-		// 		_ships_p2 = (List<Ship>)dataContract.ReadObject(fs);
-		// 	}
+		// 	_ships_p1 = new List<Ship>(ship);
+		// 	_ships_p2 = new List<Ship>(ship);
+
 
 		// }
 		// catch (FileNotFoundException ex)
@@ -76,19 +72,20 @@ public class GameController
 		// 	// handle the error
 		// 	throw new ArgumentException($"Terjadi kesalahan: {ex.Message}");
 		// }
-		
-		using (FileStream fs = new FileStream(@".\ships.xml", FileMode.Open))
-			{
-				_ships_p1 = (List<Ship>)dataContract.ReadObject(fs);
-			}
+		List<Ship> _ships_p1 = new();
+		List<Ship> _ships_p2 = new();
 
-			// duplicate data
-			// _ships_p1 = new List<Ship>(ship);
-			// _ships_p2 = new List<Ship>(ship);
-				using (FileStream fs = new FileStream(@".\ships.xml", FileMode.Open))
-			{
-				_ships_p2 = (List<Ship>)dataContract.ReadObject(fs);
-			}
+		using (FileStream fs = new FileStream(@".\ships.xml", FileMode.Open))
+		{
+			_ships_p1 = (List<Ship>)dataContract.ReadObject(fs);
+		}
+
+
+
+		using (FileStream fs = new FileStream(@".\ships.xml", FileMode.Open))
+		{
+			_ships_p2 = (List<Ship>)dataContract.ReadObject(fs);
+		}
 
 		//set ships for each player
 		_shipsPlayer.Add(_player1, _ships_p1);
@@ -135,21 +132,29 @@ public class GameController
 		var attackBoard = _attackBoards[player];
 		return attackBoard.IsHit(cordinate);
 	}
-	public List<Cordinate> GetMissedAttacks(IPlayer player)
+	public List<Cordinate> GetMissedAttackBoard(IPlayer player)
 	{
 		var attackBoard = _attackBoards[player];
 		return attackBoard.GetMissedAttacks();
 	}
+	public List<Cordinate> GetMissedShipBoard(IPlayer player)
+	{
+		var shipBoard = _shipBoards[player];
+		return shipBoard.GetMissedAttacks();
+	}
+
 
 	public bool ProcessShotResult(IPlayer player, Cordinate cordinate)
 	{
 		var attackBoard = _attackBoards[player];
+		var shipBoard = _shipBoards[player];
 		if (IsShotHit(player, cordinate))
 		{
 
 			return attackBoard.SetHit(cordinate);
 		}
 		SwitchPlayer();
+		shipBoard.SetMissAttack(cordinate);
 		attackBoard.SetMissAttack(cordinate);
 		return false;
 	}
