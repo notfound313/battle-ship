@@ -46,7 +46,6 @@ public class Ship : IShip
 	{
 		if (cordinates.Count != _sizeShip)
 		{
-			Console.WriteLine("Error: The number of cordinates is not equal to the size of the ship.");
 			return false;
 		}
 		_cordinates = cordinates;

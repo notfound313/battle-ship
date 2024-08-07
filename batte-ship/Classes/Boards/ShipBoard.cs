@@ -44,7 +44,7 @@ public class ShipBoard : Board<Ship>
 	{
 		if(ships.Contains(ship))
 		{
-			Console.WriteLine("Error: Ship already exists in the board.");
+			// Console.WriteLine("Error: Ship already exists in the board.");
 			return false;
 	
 		}
@@ -56,58 +56,58 @@ public class ShipBoard : Board<Ship>
 	#region Checking if the ship is placed in the board
 	public bool PlaceShip(Ship ship, Cordinate from, Cordinate to)
 {
-	// Hitung jarak antara 'from' dan 'to'
-	int shipWidth = Math.Abs(from.x - to.x) + 1; // Termasuk titik awal
-	int shipHeight = Math.Abs(from.y - to.y) + 1; // Termasuk titik awal
+	// calculate the width and height of the ship
+	int shipWidth = Math.Abs(from.x - to.x) + 1; 
+	int shipHeight = Math.Abs(from.y - to.y) + 1; 
 
-	// Validasi ukuran kapal
+	// validate the ship size
 	if (ship.GetShipSize() != shipWidth && ship.GetShipSize() != shipHeight)
 	{
-		Console.WriteLine("Error: Ukuran kapal tidak sesuai.");
+		// Console.WriteLine("Error: Ukuran kapal tidak sesuai.");
 		return false;
 		
 	}
 
-	// Validasi penempatan di papan
+	// validate the placement
 	if (!IsPlacementValid(from, to))
 	{
-		Console.WriteLine("Error: Penempatan kapal tidak valid.");
+		// Console.WriteLine("Error: Penempatan kapal tidak valid.");
 		return false;
 	}
 
-	// Pastikan tidak ada kapal lain yang bertabrakan
+	// make sure the ship is not placed on the board
 	if (IsShipPlaced(from, to))
 	{
-		Console.WriteLine("Error: Kapal sudah diletakkan di papan.");
+		// Console.WriteLine("Error: Kapal sudah diletakkan di papan.");
 		return false;
 	}
 
-	// Atur koordinat kapal
+	// set coordinates
 	
 	if (ship.setCordinates(CalculateShipCordinates(from, to)))
 {
-    // Menghapus kapal dari papan
-    RemoveShipFromBoard(ship);
+	// Delete ship on the board
+	RemoveShipFromBoard(ship);
 
-    // Menyusun kapal di papan
-    SetShipInBoard();
+	// Set ship on the board
+	SetShipInBoard();
 }
 	
 
-	return (ship.setCordinates(CalculateShipCordinates(from, to)));
+	return ship.setCordinates(CalculateShipCordinates(from, to));
 }
 private void RemoveShipFromBoard(Ship ship)
 {
-    for (int x = 0; x < board.GetLength(0); x++)
-    {
-        for (int y = 0; y < board.GetLength(1); y++)
-        {
-            if (board[x, y] == ship)
-            {
-                board[x, y] = null;
-            }
-        }
-    }
+	for (int x = 0; x < board.GetLength(0); x++)
+	{
+		for (int y = 0; y < board.GetLength(1); y++)
+		{
+			if (board[x, y] == ship)
+			{
+				board[x, y] = null;
+			}
+		}
+	}
 }
 
 	
@@ -115,7 +115,7 @@ private void RemoveShipFromBoard(Ship ship)
 {
 	var cordinates = new List<Cordinate>();
 
-	// Pastikan koordinat dari ke ke (to) diurutkan dengan benar
+	// make sure the ship is placed in a straight line
 	int startX = Math.Min(from.x, to.x);
 	int endX = Math.Max(from.x, to.x);
 	int startY = Math.Min(from.y, to.y);
@@ -123,7 +123,7 @@ private void RemoveShipFromBoard(Ship ship)
 
 	if (from.x == to.x)
 	{
-		// Kapal diletakkan secara vertikal
+		// ship placed vertically
 		for (int y = startY; y <= endY; y++)
 		{
 			cordinates.Add(new Cordinate(from.x, y));
@@ -131,7 +131,7 @@ private void RemoveShipFromBoard(Ship ship)
 	}
 	else if (from.y == to.y)
 	{
-		// Kapal diletakkan secara horizontal
+		// ship placed horizontally
 		for (int x = startX; x <= endX; x++)
 		{
 			cordinates.Add(new Cordinate(x, from.y));
@@ -139,7 +139,7 @@ private void RemoveShipFromBoard(Ship ship)
 	}
 	else
 	{
-		// Koordinat tidak valid untuk kapal
+		// Coordinates do not form a valid ship placement.
 		throw new ArgumentException("Coordinates do not form a valid ship placement.");
 	}
 
@@ -148,7 +148,7 @@ private void RemoveShipFromBoard(Ship ship)
 
 	private bool IsPlacementValid(Cordinate from, Cordinate to)
 {
-	// Memeriksa apakah koordinat berada dalam batas papan
+	// checking the board boundaries
 	if (from.x < 0 || from.y < 0 || to.x < 0 || to.y < 0 ||
 		from.x >= GetBoardRowLength() || from.y >= GetBoardColumnLength() ||
 		to.x >= GetBoardRowLength() || to.y >= GetBoardColumnLength())
@@ -156,20 +156,20 @@ private void RemoveShipFromBoard(Ship ship)
 		return false;
 	}
 
-	// Memeriksa apakah koordinat membentuk garis horizontal atau vertikal
+	// checking if the ship is placed in a straight line
 	if (from.x == to.x)
 	{
-		// Kapal diletakkan secara vertikal
-		return (from.y <= to.y);
+		// ship placed vertically
+		return from.y <= to.y;
 	}
 	else if (from.y == to.y)
 	{
-		// Kapal diletakkan secara horizontal
-		return (from.x <= to.x);
+		// ship placed horizontally
+		return from.x <= to.x;
 	}
 	else
 	{
-		// Kapal tidak diletakkan secara horizontal atau vertikal
+		// ship not placed in a straight line or outside the board boundaries
 		return false;
 	}
 }
@@ -191,5 +191,9 @@ private void RemoveShipFromBoard(Ship ship)
 			}		
 		}
 		return null;
+	}
+	public void SetMissAttack(Cordinate cordinate)
+	{
+		missAttacks.Add(cordinate);
 	}
 }
