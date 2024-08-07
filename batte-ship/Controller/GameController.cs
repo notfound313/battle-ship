@@ -29,7 +29,7 @@ public class GameController
 		//set players for each player
 		_player1 = _players[0];
 		_player2 = _players[1];
-		
+
 		//read cordinates ship from file
 		var knowTypes = new List<Type>
 	{
@@ -41,41 +41,59 @@ public class GameController
 		typeof(Cordinate)
 	};
 
-	DataContractSerializer dataContract = new DataContractSerializer(typeof(List<Ship>), knowTypes);
+		DataContractSerializer dataContract = new DataContractSerializer(typeof(List<Ship>), knowTypes);
 
-	try
-	{
-		// read XML once.
+		// try
+		// {
+		// 	// read XML once.
+			
+		// 	using (FileStream fs = new FileStream(@".\ships.xml", FileMode.Open))
+		// 	{
+		// 		_ships_p1 = (List<Ship>)dataContract.ReadObject(fs);
+		// 	}
+
+		// 	// duplicate data
+		// 	// _ships_p1 = new List<Ship>(ship);
+		// 	// _ships_p2 = new List<Ship>(ship);
+		// 		using (FileStream fs = new FileStream(@".\ships.xml", FileMode.Open))
+		// 	{
+		// 		_ships_p2 = (List<Ship>)dataContract.ReadObject(fs);
+		// 	}
+
+		// }
+		// catch (FileNotFoundException ex)
+		// {
+		// 	// handle the error of file not found.
+		// 	throw new ArgumentException($"File tidak ditemukan: {ex.Message}");
+		// }
+		// catch (SerializationException ex)
+		// {
+		// 	// handle the error of deserialisasi.
+		// 	throw new ArgumentException($"Kesalahan deserialisasi: {ex.Message}");
+		// }
+		// catch (Exception ex)
+		// {
+		// 	// handle the error
+		// 	throw new ArgumentException($"Terjadi kesalahan: {ex.Message}");
+		// }
 		
 		using (FileStream fs = new FileStream(@".\ships.xml", FileMode.Open))
-		{
-			_ships_p1 = (List<Ship>)dataContract.ReadObject(fs);
-		}
+			{
+				_ships_p1 = (List<Ship>)dataContract.ReadObject(fs);
+			}
 
-		// duplicate data
-		_ships_p2 = new List<Ship>(_ships_p1);
-		
-	}
-	catch (FileNotFoundException ex)
-	{
-		// handle the error of file not found.
-		throw new ($"File tidak ditemukan: {ex.Message}");
-	}
-	catch (SerializationException ex)
-	{
-		// handle the error of deserialisasi.
-		throw new ($"Kesalahan deserialisasi: {ex.Message}");
-	}
-	catch (Exception ex)
-	{
-		// handle the error
-		throw new ($"Terjadi kesalahan: {ex.Message}");
-	}
+			// duplicate data
+			// _ships_p1 = new List<Ship>(ship);
+			// _ships_p2 = new List<Ship>(ship);
+				using (FileStream fs = new FileStream(@".\ships.xml", FileMode.Open))
+			{
+				_ships_p2 = (List<Ship>)dataContract.ReadObject(fs);
+			}
 
 		//set ships for each player
 		_shipsPlayer.Add(_player1, _ships_p1);
 		_shipsPlayer.Add(_player2, _ships_p2);
-		
+
 		//set attack boards and ship boards for each player
 		_attackBoards[_player1] = new AttackBoard(_shipsPlayer[_player2]);
 		_shipBoards[_player1] = new ShipBoard(_shipsPlayer[_player1]);
@@ -85,38 +103,27 @@ public class GameController
 		_attackBoards[_player2] = new AttackBoard(_shipsPlayer[_player1]);
 
 		//set current player and next player
-		_currentPlayer =_player1;
+		_currentPlayer = _player1;
 		_nextPlayer = _player2;
 	}
 
 
 
 
-	public bool PlaceShipsOnBoard(IPlayer player, ShipType shipType,Cordinate from, Cordinate to)
+	public bool PlaceShipsOnBoard(IPlayer player, ShipType shipType, Cordinate from, Cordinate to)
 	{
 		var shipBoard = _shipBoards[player];
 		var ships = _shipsPlayer[player];
 		foreach (var ship in ships)
 		{
 			if (ship._shipType == shipType)
-			{	
-							
-				return shipBoard.PlaceShip(ship,from,to);
-				
+			{
+
+				return shipBoard.PlaceShip(ship, from, to);
+
 			}
 		}
-		
-		return false;
-	}
-	public bool Attack(IPlayer player, Cordinate cordinate)
-	{
-		var attackBoard = _attackBoards[player];
-		if (attackBoard.IsHit(cordinate))
-		{
-			return attackBoard.SetHit(cordinate);
-		}
-		
-		SwitchPlayer();
+
 		return false;
 	}
 	public bool HasPlayer(IPlayer player)
@@ -137,9 +144,9 @@ public class GameController
 	public bool ProcessShotResult(IPlayer player, Cordinate cordinate)
 	{
 		var attackBoard = _attackBoards[player];
-		if (IsShotHit(player,cordinate))
+		if (IsShotHit(player, cordinate))
 		{
-			
+
 			return attackBoard.SetHit(cordinate);
 		}
 		SwitchPlayer();
@@ -169,23 +176,23 @@ public class GameController
 	{
 		return _players;
 	}
-	
-	public  Ship[,] GetShipBoard(IPlayer player)
+
+	public Ship[,] GetShipBoard(IPlayer player)
 	{
 		return _shipBoards[player].GetBoard();
-		
+
 	}
-	
+
 	public Ship GetShipHasHit(Cordinate cordinate)
 	{
 		var attckBoard = _attackBoards[_currentPlayer];
 		return attckBoard.GetShipHited(cordinate);
 	}
-	
-	public  Ship[,] GetAttckBoard(IPlayer player)
+
+	public Ship[,] GetAttckBoard(IPlayer player)
 	{
 		return _attackBoards[player].GetBoard();
-		
+
 	}
 
 	public bool IsAllShipShunk(IPlayer player)
@@ -195,12 +202,13 @@ public class GameController
 
 	}
 
-	public Ship GetOneShip(IPlayer player, ShipType type){
+	public Ship GetOneShip(IPlayer player, ShipType type)
+	{
 		var shipBoard = _shipBoards[player];
 		return shipBoard.GetShip(type);
 	}
 
-	
+
 
 	private bool CheckWinner(IPlayer player)
 	{
