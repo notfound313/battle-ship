@@ -16,9 +16,7 @@ public class Ship : IShip
 	public readonly int _sizeShip;
 	[DataMember]
 	public readonly ShipType _shipType;
-	[DataMember]
-	
-	public Orientation Orientation { get; set; }
+
 	[DataMember]
 	private List<Coordinate> _cordinates;
 	[DataMember]

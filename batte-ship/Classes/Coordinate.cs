@@ -16,4 +16,16 @@ public class Coordinate
 		this.y = y;
 	}
 	public Coordinate(){}
+	public override bool Equals(object? obj)
+	{
+		if (obj is Coordinate coordinate)
+		{
+			return x == coordinate.x && y == coordinate.y;
+		}
+		return false;
+	}
+	public override int GetHashCode()
+	{
+		return HashCode.Combine(x, y);
+	}
 }
