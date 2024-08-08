@@ -189,97 +189,76 @@ public partial class Program
 
 	}
 
-	public static void DisplayShipBoard(GameController gm, IPlayer player)
-	{
-		Console.WriteLine();
-		Console.WriteLine($"The {player.Name} Ship Board");
+	  public static void DisplayShipBoard(GameController gm, IPlayer player)
+    {
+        Console.WriteLine();
+        Console.WriteLine($"The {player.Name} Ship Board");
 
-		Ship[,] ships = gm.GetShipBoard(player);
-		int rows = ships.GetLength(0);
-		int cols = ships.GetLength(1);
-		Console.Write("   ");
-		for (int i = 0; i < cols; i++)
-		{
-			Console.Write($"{i}  ");
-		}
-		Console.WriteLine();
-		
-		for (int i = 0; i < cols; i++)
-		{
-			Console.Write("-- ");
-		}
-		Console.WriteLine();
+        Ship[,] ships = gm.GetShipBoard(player);
+        DisplayBoard(ships, gm, IsShipBoard: true);
+    }
 
-		for (int row = 0; row < rows; row++)
-		{
-			Console.Write($"{row} |");
-			for (int col = 0; col < cols; col++)
-			{
-				char symbol = GetShipSymbol(ships[row, col], new Cordinate(row, col), gm);
-				Console.Write($"{symbol}  ");
-			}
-			Console.WriteLine();
-		}
-	}
+    public static void DisplayAttackBoard(GameController gm, IPlayer player)
+    {
+        Console.WriteLine();
+        Console.WriteLine($"The {player.Name} Attack Board");
 
-	private static char GetShipSymbol(Ship ship, Cordinate coord, GameController gm)
-	{
-		if (ship == null)
-		{
-			return ValidMissAttack(gm, coord, false) ? 'M' : '.';
-		}
+        Ship[,] board = gm.GetAttckBoard(player);
+        DisplayBoard(board, gm, IsShipBoard: false);
+    }
 
-		bool isHit = ship.statusOccaption.ContainsValue(OccopationType.Hit);
-		if (isHit && DisplayHitShip(ship, coord))
-		{
-			return 'X';
-		}
+    private static void DisplayBoard(Ship[,] board, GameController gm, bool IsShipBoard)
+    {
+        int rows = board.GetLength(0);
+        int cols = board.GetLength(1);
 
-		return _shipSymbol[ship._shipType];
-	}
+        // Print column headers
+        Console.Write("   ");
+        for (int i = 0; i < cols; i++)
+        {
+            Console.Write($"{i}  ");
+        }
+        Console.WriteLine();
+        
+        // Print separator line
+        Console.Write("   ");
+        for (int i = 0; i < cols; i++)
+        {
+            Console.Write("-- ");
+        }
+        Console.WriteLine();
 
-	public static void DisplayAttackBoard(GameController gm, IPlayer player)
-	{
-		Console.WriteLine();
-		Console.WriteLine($"The {player.Name} Attack Board");
+        // Print board content
+        for (int row = 0; row < rows; row++)
+        {
+            Console.Write($"{row} |");
+            for (int col = 0; col < cols; col++)
+            {
+                char symbol = GetBoardSymbol(board[row, col], new Cordinate(row, col), gm, IsShipBoard);
+                Console.Write($"{symbol}  ");
+            }
+            Console.WriteLine();
+        }
+    }
 
-		Ship[,] board = gm.GetAttckBoard(player);
-		int rows = board.GetLength(0);
-		int cols = board.GetLength(1);
-		Console.Write("   ");
-		for (int i = 0; i < cols; i++)
-		{
-			Console.Write($"{i}  ");
-		}
-		Console.WriteLine();
-		Console.Write("   ");
-		for (int i = 0; i < cols; i++)
-		{
-			Console.Write("-- ");
-		}
-		Console.WriteLine();
+    private static char GetBoardSymbol(Ship ship, Cordinate coord, GameController gm, bool IsShipBoard)
+    {
+        if (ship == null)
+        {
+            return IsShipBoard
+                ? ValidMissAttack(gm, coord, false) ? 'M' : '.'
+                : ValidMissAttack(gm, coord, true) ? 'M' : '.';
+        }
 
-		for (int row = 0; row < rows; row++)
-		{
-			Console.Write($"{row} |");
-			for (int col = 0; col < cols; col++)
-			{
-				char symbol = GetAttackBoardSymbol(board[row, col], new Cordinate(row, col), gm);
-				Console.Write($"{symbol}  ");
-			}
-			Console.WriteLine();
-		}
-	}
+        bool isHit = ship.statusOccaption.ContainsValue(OccopationType.Hit);
+        if (isHit && DisplayHitShip(ship, coord))
+        {
+            return 'X';
+        }
 
-	private static char GetAttackBoardSymbol(Ship ship, Cordinate coord, GameController gm)
-	{
-		if (ship != null && ship.statusOccaption.ContainsValue(OccopationType.Hit))
-		{
-			return DisplayHitShip(ship, coord) ? 'X' : '.';
-		}
-
-		return ValidMissAttack(gm, coord, true) ? 'M' : '.';
-	}
+        // Return ship symbol or default
+        return IsShipBoard ? _shipSymbol[ship._shipType] : '.';
+    }
 
 	static bool DisplayHitShip(Ship ship, Cordinate cordinate)
 	{
