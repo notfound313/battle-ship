@@ -6,7 +6,7 @@ namespace Components.Battle.Ship;
 public class CruiserShip:Ship
 {
 	public CruiserShip( string shipName) :
-	base(ShipType.Cruiser, OccopationType.Empty, 3, shipName)
+	base(ShipType.Cruiser,  3, shipName)
 	{
 		
 		

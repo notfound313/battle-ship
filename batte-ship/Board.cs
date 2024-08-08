@@ -8,7 +8,7 @@ public abstract class Board<T>:IBoard
 	public  T[,] board = new T[10,10];
 	protected IPlayer player;
 	protected List<Ship> ships ;
-	protected List<Cordinate> missAttacks = new ();
+	protected List<Coordinate> missAttacks = new ();
 	
 	
 	public void SetListShips(List<Ship> ships)
@@ -16,7 +16,7 @@ public abstract class Board<T>:IBoard
 		this.ships = ships;
 	}
 	
-	public bool IsOccopied(Cordinate cordinate)
+	public bool IsOccopied(Coordinate cordinate)
 	{
 		return ships.Exists(ship => ship.GetCordinates().Contains(cordinate));
 	}
@@ -65,7 +65,7 @@ public abstract class Board<T>:IBoard
 	{
 		return board.Length;
 	}
-	public List<Cordinate> GetMissedAttacks()
+	public List<Coordinate> GetMissedAttacks()
 	{
 		return missAttacks;
 	}

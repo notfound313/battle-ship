@@ -17,18 +17,18 @@ public class Ship : IShip
 	[DataMember]
 	public readonly ShipType _shipType;
 	[DataMember]
-	public OccopationType _occopationType { get; set; }
+	
 	public Orientation Orientation { get; set; }
 	[DataMember]
-	private List<Cordinate> _cordinates;
+	private List<Coordinate> _cordinates;
 	[DataMember]
 	public string ShipName { get; set; }
-	public Dictionary<Cordinate, OccopationType> statusOccaption = new ();
+	public Dictionary<Coordinate, OccopationType> statusOccaption = new ();
 
-	public Ship(ShipType shipType, OccopationType occopationType, int sizeShip, string shipName)
+	public Ship(ShipType shipType, int sizeShip, string shipName)
 	{
 		_shipType = shipType;
-		_occopationType = occopationType;
+		
 		_sizeShip = sizeShip;
 		ShipName = shipName;
 		_hits = 0;
@@ -42,7 +42,7 @@ public class Ship : IShip
 	{
 		return _sizeShip;
 	}
-	public bool setCordinates(List<Cordinate> cordinates)
+	public bool setCordinates(List<Coordinate> cordinates)
 	{
 		if (cordinates.Count != _sizeShip)
 		{
@@ -52,7 +52,7 @@ public class Ship : IShip
 		return true;
 	}
 	
-	private void SetstatusOccaption(Cordinate cordinate , OccopationType occopationType)
+	private void SetstatusOccaption(Coordinate cordinate , OccopationType occopationType)
 	{
 		statusOccaption.Add(cordinate, occopationType);
 	}
@@ -62,12 +62,12 @@ public class Ship : IShip
 		return _hits == _sizeShip;
 	}
 
-	public List<Cordinate> GetCordinates()
+	public List<Coordinate> GetCordinates()
 	{
 		return _cordinates;
 	}
 
-	public bool IsHit(Cordinate cordinate)
+	public bool IsHit(Coordinate cordinate)
 	{
 		if (IsCordinateInShip(cordinate))
 		{
@@ -79,7 +79,7 @@ public class Ship : IShip
 		return false;
 	}
 	
-	private bool IsCordinateInShip(Cordinate cordinate)
+	private bool IsCordinateInShip(Coordinate cordinate)
 	{
 		foreach (var cor in _cordinates)
 		{

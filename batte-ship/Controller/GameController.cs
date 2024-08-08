@@ -10,13 +10,12 @@ namespace Components.Battle.Ship;
 public class GameController
 {
 	private List<IPlayer> _players;
-	private IPlayer _player1, _player2;
+	
 	private Dictionary<IPlayer, AttackBoard> _attackBoards = new();
 	private Dictionary<IPlayer, ShipBoard> _shipBoards = new();
-	private IPlayer _currentPlayer;
-	private IPlayer _nextPlayer;
+	private IPlayer _currentPlayer;	
 	private Dictionary<IPlayer, List<Ship>> _shipsPlayer = new();
-	private Dictionary<IPlayer, List<Cordinate>> _cordinates = new();
+	private Dictionary<IPlayer, List<Coordinate>> _cordinates = new();
 	
 
 
@@ -26,9 +25,7 @@ public class GameController
 		//set players in list
 		_players = players;
 		//set players for each player
-		_player1 = _players[0];
-		_player2 = _players[1];
-
+		
 		//read cordinates ship from file
 		var knowTypes = new List<Type>
 	{
@@ -37,7 +34,7 @@ public class GameController
 		typeof(DestroyerShip),
 		typeof(SubmarineShip),
 		typeof(CarrierShip),
-		typeof(Cordinate)
+		typeof(Coordinate)
 	};
 
 		DataContractSerializer dataContract = new DataContractSerializer(typeof(List<Ship>), knowTypes);
@@ -88,26 +85,26 @@ public class GameController
 		}
 
 		//set ships for each player
-		_shipsPlayer.Add(_player1, _ships_p1);
-		_shipsPlayer.Add(_player2, _ships_p2);
+		_shipsPlayer.Add(_players[0], _ships_p1);
+		_shipsPlayer.Add(_players[1], _ships_p2);
 
 		//set attack boards and ship boards for each player
-		_attackBoards[_player1] = new AttackBoard(_shipsPlayer[_player2]);
-		_shipBoards[_player1] = new ShipBoard(_shipsPlayer[_player1]);
+		_attackBoards[_players[0]] = new AttackBoard(_shipsPlayer[_players[1]]);
+		_shipBoards[_players[0]] = new ShipBoard(_shipsPlayer[_players[0]]);
 
 
-		_shipBoards[_player2] = new ShipBoard(_shipsPlayer[_player2]);
-		_attackBoards[_player2] = new AttackBoard(_shipsPlayer[_player1]);
+		_shipBoards[_players[1]] = new ShipBoard(_shipsPlayer[_players[1]]);
+		_attackBoards[_players[1]] = new AttackBoard(_shipsPlayer[_players[0]]);
 
 		//set current player and next player
-		_currentPlayer = _player1;
-		_nextPlayer = _player2;
+		_currentPlayer = _players[0];
+		
 	}
 
 
 
 
-	public bool PlaceShipsOnBoard(IPlayer player, ShipType shipType, Cordinate from, Cordinate to)
+	public bool PlaceShipsOnBoard(IPlayer player, ShipType shipType, Coordinate from, Coordinate to)
 	{
 		var shipBoard = _shipBoards[player];
 		var ships = _shipsPlayer[player];
@@ -127,24 +124,24 @@ public class GameController
 	{
 		return _players.Contains(player);
 	}
-	public bool IsShotHit(IPlayer player, Cordinate cordinate)
+	public bool IsShotHit(IPlayer player, Coordinate cordinate)
 	{
 		var attackBoard = _attackBoards[player];
 		return attackBoard.IsHit(cordinate);
 	}
-	public List<Cordinate> GetMissedAttackBoard(IPlayer player)
+	public List<Coordinate> GetMissedAttackBoard(IPlayer player)
 	{
 		var attackBoard = _attackBoards[player];
 		return attackBoard.GetMissedAttacks();
 	}
-	public List<Cordinate> GetMissedShipBoard(IPlayer player)
+	public List<Coordinate> GetMissedShipBoard(IPlayer player)
 	{
 		var shipBoard = _shipBoards[player];
 		return shipBoard.GetMissedAttacks();
 	}
 
 
-	public bool ProcessShotResult(IPlayer player, Cordinate cordinate)
+	public bool ProcessShotResult(IPlayer player, Coordinate cordinate)
 	{
 		var attackBoard = _attackBoards[player];
 		var shipBoard = _shipBoards[player];
@@ -166,14 +163,14 @@ public class GameController
 
 	private void SwitchPlayer()
 	{
-		var temp = _currentPlayer;
-		_currentPlayer = _nextPlayer;
-		_nextPlayer = temp;
-	}
-
-	public void SetCurrentPlayer(IPlayer player)
-	{
-		_currentPlayer = player;
+		foreach (var player in _players)
+		{
+			if (player != _currentPlayer)
+			{
+				_currentPlayer = player;
+				return;
+			}
+		}
 	}
 
 
@@ -188,7 +185,7 @@ public class GameController
 
 	}
 
-	public Ship GetShipHasHit(Cordinate cordinate)
+	public Ship GetShipHasHit(Coordinate cordinate)
 	{
 		var attckBoard = _attackBoards[_currentPlayer];
 		return attckBoard.GetShipHited(cordinate);

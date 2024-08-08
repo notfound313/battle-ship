@@ -16,7 +16,7 @@ public class ShipBoard : Board<Ship>
 		return ships.TrueForAll(ship => ship.IsShunk());
 	}
 	
-	public bool IsAnyShipHit(Cordinate cordinate)
+	public bool IsAnyShipHit(Coordinate cordinate)
 	{
 		return ships.Exists(ship => ship.IsHit(cordinate));
 	}
@@ -54,7 +54,7 @@ public class ShipBoard : Board<Ship>
 	#endregion
 	
 	#region Checking if the ship is placed in the board
-	public bool PlaceShip(Ship ship, Cordinate from, Cordinate to)
+	public bool PlaceShip(Ship ship, Coordinate from, Coordinate to)
 {
 	// calculate the width and height of the ship
 	int shipWidth = Math.Abs(from.x - to.x) + 1; 
@@ -111,9 +111,9 @@ private void RemoveShipFromBoard(Ship ship)
 }
 
 	
-	private List<Cordinate> CalculateShipCordinates(Cordinate from, Cordinate to)
+	private List<Coordinate> CalculateShipCordinates(Coordinate from, Coordinate to)
 {
-	var cordinates = new List<Cordinate>();
+	var cordinates = new List<Coordinate>();
 
 	// make sure the ship is placed in a straight line
 	int startX = Math.Min(from.x, to.x);
@@ -126,7 +126,7 @@ private void RemoveShipFromBoard(Ship ship)
 		// ship placed vertically
 		for (int y = startY; y <= endY; y++)
 		{
-			cordinates.Add(new Cordinate(from.x, y));
+			cordinates.Add(new Coordinate(from.x, y));
 		}
 	}
 	else if (from.y == to.y)
@@ -134,7 +134,7 @@ private void RemoveShipFromBoard(Ship ship)
 		// ship placed horizontally
 		for (int x = startX; x <= endX; x++)
 		{
-			cordinates.Add(new Cordinate(x, from.y));
+			cordinates.Add(new Coordinate(x, from.y));
 		}
 	}
 	else
@@ -146,7 +146,7 @@ private void RemoveShipFromBoard(Ship ship)
 	return cordinates;
 }
 
-	private bool IsPlacementValid(Cordinate from, Cordinate to)
+	private bool IsPlacementValid(Coordinate from, Coordinate to)
 {
 	// checking the board boundaries
 	if (from.x < 0 || from.y < 0 || to.x < 0 || to.y < 0 ||
@@ -175,7 +175,7 @@ private void RemoveShipFromBoard(Ship ship)
 }
 
 	
-	private bool IsShipPlaced(Cordinate from, Cordinate to)
+	private bool IsShipPlaced(Coordinate from, Coordinate to)
 	{
 		return ships.Exists(ship => ship.GetCordinates().Contains(from) && ship.GetCordinates().Contains(to));
 	}
@@ -192,7 +192,7 @@ private void RemoveShipFromBoard(Ship ship)
 		}
 		return null;
 	}
-	public void SetMissAttack(Cordinate cordinate)
+	public void SetMissAttack(Coordinate cordinate)
 	{
 		missAttacks.Add(cordinate);
 	}

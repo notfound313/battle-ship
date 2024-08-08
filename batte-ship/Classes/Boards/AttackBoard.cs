@@ -27,21 +27,21 @@ public class AttackBoard: Board<Ship>
 	
 	
 	#region Attack Ship on Board	
-	public bool IsHit(Cordinate cordinate)
+	public bool IsHit(Coordinate cordinate)
 	{
 		return board[cordinate.x,cordinate.y] != null;
 	}
-	private Ship GetShipHasHit(Cordinate cordinate)
+	private Ship GetShipHasHit(Coordinate cordinate)
 	{
 		return board[cordinate.x,cordinate.y];
 	}
 	
-	public Ship GetShipHited(Cordinate cordinate)
+	public Ship GetShipHited(Coordinate cordinate)
 	{
 		return GetShipHasHit(cordinate);
 	}
 	
-	public bool SetHit(Cordinate cordinate)
+	public bool SetHit(Coordinate cordinate)
 	{
 		if(IsHit(cordinate)&&!GetShipHasHit(cordinate).IsShunk())	
 		{
@@ -54,7 +54,7 @@ public class AttackBoard: Board<Ship>
 		
 	}
 	  #endregion
-	public void SetMissAttack(Cordinate cordinate)
+	public void SetMissAttack(Coordinate cordinate)
 	{
 		missAttacks.Add(cordinate);
 	}

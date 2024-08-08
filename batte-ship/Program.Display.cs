@@ -30,7 +30,7 @@ public partial class Program
 			Thread.Sleep(1000);
 
 			TypingTextAnimation($"Player {player.Name} Turn");
-			AttackCordinate(out Cordinate attackCordinate);
+			AttackCordinate(out Coordinate attackCordinate);
 			if (gm.ProcessShotResult(player, attackCordinate))
 			{
 				Console.WriteLine($"Ship {gm.GetShipHasHit(attackCordinate).ShipName} is Hit at {attackCordinate.x} {attackCordinate.y}");
@@ -112,8 +112,8 @@ public partial class Program
 					Console.WriteLine();
 					TypingTextAnimation($"Input Coordinates to fit the size of the ship ({shipTypeEnum}, Size: {ship._sizeShip})");
 
-					Cordinate cordinateFrom = GetCoordinate("Enter Coordinate From: ");
-					Cordinate cordinateTo = GetCoordinate("Enter Coordinate To: ");
+					Coordinate cordinateFrom = GetCoordinate("Enter Coordinate From: ");
+					Coordinate cordinateTo = GetCoordinate("Enter Coordinate To: ");
 
 					if (gm.PlaceShipsOnBoard(player, shipTypeEnum, cordinateFrom, cordinateTo))
 					{
@@ -152,10 +152,10 @@ public partial class Program
 		return int.TryParse(Console.ReadLine(), out int shipType) ? shipType : 0;
 	}
 
-	private static Cordinate GetCoordinate(string prompt)
+	private static Coordinate GetCoordinate(string prompt)
 	{
 		TypingTextAnimation(prompt);
-		AttackCordinate(out Cordinate coordinate);
+		AttackCordinate(out Coordinate coordinate);
 		return coordinate;
 	}
 
@@ -215,14 +215,14 @@ public partial class Program
 			Console.Write($"{row} |");
 			for (int col = 0; col < cols; col++)
 			{
-				char symbol = GetShipSymbol(ships[row, col], new Cordinate(row, col), gm);
+				char symbol = GetShipSymbol(ships[row, col], new Coordinate(row, col), gm);
 				Console.Write($"{symbol}  ");
 			}
 			Console.WriteLine();
 		}
 	}
 
-	private static char GetShipSymbol(Ship ship, Cordinate coord, GameController gm)
+	private static char GetShipSymbol(Ship ship, Coordinate coord, GameController gm)
 	{
 		if (ship == null)
 		{
@@ -264,14 +264,14 @@ public partial class Program
 			Console.Write($"{row} |");
 			for (int col = 0; col < cols; col++)
 			{
-				char symbol = GetAttackBoardSymbol(board[row, col], new Cordinate(row, col), gm);
+				char symbol = GetAttackBoardSymbol(board[row, col], new Coordinate(row, col), gm);
 				Console.Write($"{symbol}  ");
 			}
 			Console.WriteLine();
 		}
 	}
 
-	private static char GetAttackBoardSymbol(Ship ship, Cordinate coord, GameController gm)
+	private static char GetAttackBoardSymbol(Ship ship, Coordinate coord, GameController gm)
 	{
 		if (ship != null && ship.statusOccaption.ContainsValue(OccopationType.Hit))
 		{
@@ -281,7 +281,7 @@ public partial class Program
 		return ValidMissAttack(gm, coord, true) ? 'M' : '.';
 	}
 
-	static bool DisplayHitShip(Ship ship, Cordinate cordinate)
+	static bool DisplayHitShip(Ship ship, Coordinate cordinate)
 	{
 		foreach (var item in ship.statusOccaption.Keys)
 		{
@@ -293,7 +293,7 @@ public partial class Program
 		}
 		return false;
 	}
-	static bool ValidMissAttack(GameController gm, Cordinate cordinate, bool isAttackBorad)
+	static bool ValidMissAttack(GameController gm, Coordinate cordinate, bool isAttackBorad)
 	{
 
 		if (isAttackBorad)
@@ -320,9 +320,9 @@ public partial class Program
 
 	}
 
-	static void AttackCordinate(out Cordinate attackCordinate)
+	static void AttackCordinate(out Coordinate attackCordinate)
 	{
-		attackCordinate = new Cordinate();
+		attackCordinate = new Coordinate();
 		string input;
 
 		while (true)

@@ -7,8 +7,8 @@ public interface IShip
 	int GetShipSize();
 	bool IsShunk();
 	
-	bool IsHit(Cordinate cordinate);
+	bool IsHit(Coordinate cordinate);
 	
-	bool setCordinates(List<Cordinate> cordinates);
-	List<Cordinate> GetCordinates();
+	bool setCordinates(List<Coordinate> cordinates);
+	List<Coordinate> GetCordinates();
 }
