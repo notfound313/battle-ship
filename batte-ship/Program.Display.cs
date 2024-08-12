@@ -263,7 +263,7 @@ public partial class Program
 	{
 		foreach (var item in ship.statusOccaption.Keys)
 		{
-			if (item.x == cordinate.x && item.y == cordinate.y)
+			if (cordinate.Equals(item))
 			{
 				return true;
 
@@ -288,7 +288,7 @@ public partial class Program
 		}
 		foreach (var item in gm.GetMissedShipBoard(gm.GetCurrentPlayer()))
 		{
-			if (item.x == cordinate.x && item.y == cordinate.y)
+			if (cordinate.Equals(item))
 			{
 				return true;
 			}
