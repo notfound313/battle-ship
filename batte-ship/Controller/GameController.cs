@@ -11,11 +11,11 @@ public class GameController
 {
 	private List<IPlayer> _players;
 	
-	private Dictionary<IPlayer, AttackBoard> _attackBoards = new();
+	private Dictionary<IPlayer, ShipBoard> _attackBoards = new();
 	private Dictionary<IPlayer, ShipBoard> _shipBoards = new();
 	private IPlayer _currentPlayer;	
 	private Dictionary<IPlayer, List<Ship>> _shipsPlayer = new();
-	private Dictionary<IPlayer, List<Coordinate>> _cordinates = new();
+	private Dictionary<IPlayer, List<Coordinate>> _coordinates = new();
 	
 
 
@@ -26,7 +26,7 @@ public class GameController
 		_players = players;
 		//set players for each player
 		
-		//read cordinates ship from file
+		//read coordinates ship from file
 		var knowTypes = new List<Type>
 	{
 		typeof(BattleShip),
@@ -89,12 +89,12 @@ public class GameController
 		_shipsPlayer.Add(_players[1], _ships_p2);
 
 		//set attack boards and ship boards for each player
-		_attackBoards[_players[0]] = new AttackBoard(_shipsPlayer[_players[1]]);
+		_attackBoards[_players[0]] = new ShipBoard(_shipsPlayer[_players[1]]);
 		_shipBoards[_players[0]] = new ShipBoard(_shipsPlayer[_players[0]]);
 
 
 		_shipBoards[_players[1]] = new ShipBoard(_shipsPlayer[_players[1]]);
-		_attackBoards[_players[1]] = new AttackBoard(_shipsPlayer[_players[0]]);
+		_attackBoards[_players[1]] = new ShipBoard(_shipsPlayer[_players[0]]);
 
 		//set current player and next player
 		_currentPlayer = _players[0];
@@ -117,17 +117,17 @@ public class GameController
 
 			}
 		}
-
+		
 		return false;
 	}
 	public bool HasPlayer(IPlayer player)
 	{
 		return _players.Contains(player);
 	}
-	public bool IsShotHit(IPlayer player, Coordinate cordinate)
+	public bool IsShotHit(IPlayer player, Coordinate coordinate)
 	{
 		var attackBoard = _attackBoards[player];
-		return attackBoard.IsHit(cordinate);
+		return attackBoard.IsHit(coordinate);
 	}
 	public List<Coordinate> GetMissedAttackBoard(IPlayer player)
 	{
@@ -141,18 +141,21 @@ public class GameController
 	}
 
 
-	public bool ProcessShotResult(IPlayer player, Coordinate cordinate)
+	public bool ProcessShotResult(IPlayer player, Coordinate coordinate)
 	{
 		var attackBoard = _attackBoards[player];
 		var shipBoard = _shipBoards[player];
-		if (IsShotHit(player, cordinate))
+		if (IsShotHit(player, coordinate))
 		{
-
-			return attackBoard.SetHit(cordinate);
+			Console.WriteLine("Attack hit");
+			Console.WriteLine(attackBoard.SetHit(coordinate));
+			return attackBoard.SetHit(coordinate);
 		}
+		Console.WriteLine("Missed mamangggggg");
 		SwitchPlayer();
-		shipBoard.SetMissAttack(cordinate);
-		attackBoard.SetMissAttack(cordinate);
+		Console.WriteLine("Player Switch");
+		shipBoard.SetMissAttack(coordinate);
+		attackBoard.SetMissAttack(coordinate);
 		return false;
 	}
 
@@ -185,10 +188,10 @@ public class GameController
 
 	}
 
-	public Ship GetShipHasHit(Coordinate cordinate)
+	public Ship GetShipHasHit(Coordinate coordinate)
 	{
 		var attckBoard = _attackBoards[_currentPlayer];
-		return attckBoard.GetShipHited(cordinate);
+		return attckBoard.GetShipHited(coordinate);
 	}
 
 	public Ship[,] GetAttckBoard(IPlayer player)

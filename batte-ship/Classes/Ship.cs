@@ -18,7 +18,7 @@ public class Ship : IShip
 	public readonly ShipType _shipType;
 
 	[DataMember]
-	private List<Coordinate> _cordinates;
+	private List<Coordinate> _coordinates;
 	[DataMember]
 	public string ShipName { get; set; }
 	public Dictionary<Coordinate, OccopationType> statusOccaption = new ();
@@ -46,7 +46,7 @@ public class Ship : IShip
 		{
 			return false;
 		}
-		_cordinates = cordinates;
+		_coordinates = cordinates;
 		return true;
 	}
 	
@@ -62,7 +62,7 @@ public class Ship : IShip
 
 	public List<Coordinate> GetCordinates()
 	{
-		return _cordinates;
+		return _coordinates;
 	}
 
 	public bool IsHit(Coordinate cordinate)
@@ -79,7 +79,7 @@ public class Ship : IShip
 	
 	private bool IsCordinateInShip(Coordinate cordinate)
 	{
-		foreach (var cor in _cordinates)
+		foreach (var cor in _coordinates)
 		{
 			if (cor.x == cordinate.x && cor.y == cordinate.y)
 			{

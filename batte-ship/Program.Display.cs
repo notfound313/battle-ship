@@ -112,10 +112,10 @@ public partial class Program
 					Console.WriteLine();
 					TypingTextAnimation($"Input Coordinates to fit the size of the ship ({shipTypeEnum}, Size: {ship._sizeShip})");
 
-					Coordinate cordinateFrom = GetCoordinate("Enter Coordinate From: ");
-					Coordinate cordinateTo = GetCoordinate("Enter Coordinate To: ");
+					Coordinate coordinateFrom = GetCoordinate("Enter Coordinate From: ");
+					Coordinate coordinateTo = GetCoordinate("Enter Coordinate To: ");
 
-					if (gm.PlaceShipsOnBoard(player, shipTypeEnum, cordinateFrom, cordinateTo))
+					if (gm.PlaceShipsOnBoard(player, shipTypeEnum, coordinateFrom, coordinateTo))
 					{
 						DisplayShipBoard(gm, player);
 						Console.WriteLine("Ship is Placed\n");
@@ -281,11 +281,11 @@ public partial class Program
 		return ValidMissAttack(gm, coord, true) ? 'M' : '.';
 	}
 
-	static bool DisplayHitShip(Ship ship, Coordinate cordinate)
+	static bool DisplayHitShip(Ship ship, Coordinate coordinate)
 	{
 		foreach (var item in ship.statusOccaption.Keys)
 		{
-			if (item.x == cordinate.x && item.y == cordinate.y)
+			if (item.x == coordinate.x && item.y == coordinate.y)
 			{
 				return true;
 
@@ -293,14 +293,14 @@ public partial class Program
 		}
 		return false;
 	}
-	static bool ValidMissAttack(GameController gm, Coordinate cordinate, bool isAttackBorad)
+	static bool ValidMissAttack(GameController gm, Coordinate coordinate, bool isAttackBorad)
 	{
 
 		if (isAttackBorad)
 		{
 			foreach (var item in gm.GetMissedAttackBoard(gm.GetCurrentPlayer()))
 			{
-				if (item.x == cordinate.x && item.y == cordinate.y)
+				if (item.x == coordinate.x && item.y == coordinate.y)
 				{
 					return true;
 				}
@@ -310,7 +310,7 @@ public partial class Program
 		}
 		foreach (var item in gm.GetMissedShipBoard(gm.GetCurrentPlayer()))
 		{
-			if (item.x == cordinate.x && item.y == cordinate.y)
+			if (item.x == coordinate.x && item.y == coordinate.y)
 			{
 				return true;
 			}
@@ -359,10 +359,10 @@ public partial class Program
 		return false;
 	}
 
-	public static bool IsValidCordinate(string cordinate)
+	public static bool IsValidCordinate(string coordinate)
 	{
-		bool status = int.TryParse(cordinate, out int cordinateInt);
-		if (status && cordinateInt < 10 && cordinateInt >= 0)
+		bool status = int.TryParse(coordinate, out int coordinateInt);
+		if (status && coordinateInt < 10 && coordinateInt >= 0)
 		{
 			return true;
 		}
