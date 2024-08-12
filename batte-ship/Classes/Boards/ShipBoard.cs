@@ -1,6 +1,6 @@
 namespace Components.Battle.Ship;
 
-public class ShipBoard : Board<Ship>
+public partial class ShipBoard : Board<Ship>
 {
 
 	public ShipBoard(List<Ship> ships) : base()
@@ -212,4 +212,6 @@ public class ShipBoard : Board<Ship>
 	{
 		missAttacks.Add(cordinate);
 	}
+	
+	
 }

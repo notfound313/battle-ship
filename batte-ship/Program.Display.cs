@@ -112,10 +112,10 @@ public partial class Program
 					Console.WriteLine();
 					TypingTextAnimation($"Input Coordinates to fit the size of the ship ({shipTypeEnum}, Size: {ship._sizeShip})");
 
-					Coordinate cordinateFrom = GetCoordinate("Enter Coordinate From: ");
-					Coordinate cordinateTo = GetCoordinate("Enter Coordinate To: ");
+					Coordinate coordinateFrom = GetCoordinate("Enter Coordinate From: ");
+					Coordinate coordinateTo = GetCoordinate("Enter Coordinate To: ");
 
-					if (gm.PlaceShipsOnBoard(player, shipTypeEnum, cordinateFrom, cordinateTo))
+					if (gm.PlaceShipsOnBoard(player, shipTypeEnum, coordinateFrom, coordinateTo))
 					{
 						DisplayShipBoard(gm, player);
 						Console.WriteLine("Ship is Placed\n");
@@ -190,80 +190,79 @@ public partial class Program
 	}
 
 	 public static void DisplayShipBoard(GameController gm, IPlayer player)
-    {
-        Console.WriteLine();
-        Console.WriteLine($"The {player.Name} Ship Board");
+	{
+		Console.WriteLine();
+		Console.WriteLine($"The {player.Name} Ship Board");
 
-        Ship[,] ships = gm.GetShipBoard(player);
-        DisplayBoard(ships, gm, IsShipBoard: true);
-    }
+		Ship[,] ships = gm.GetShipBoard(player);
+		DisplayBoard(ships, gm, IsShipBoard: true);
+	}
 
-    public static void DisplayAttackBoard(GameController gm, IPlayer player)
-    {
-        Console.WriteLine();
-        Console.WriteLine($"The {player.Name} Attack Board");
+	public static void DisplayAttackBoard(GameController gm, IPlayer player)
+	{
+		Console.WriteLine();
+		Console.WriteLine($"The {player.Name} Attack Board");
 
-        Ship[,] board = gm.GetAttckBoard(player);
-        DisplayBoard(board, gm, IsShipBoard: false);
-    }
+		Ship[,] board = gm.GetAttckBoard(player);
+		DisplayBoard(board, gm, IsShipBoard: false);
+	}
 
-    private static void DisplayBoard(Ship[,] board, GameController gm, bool IsShipBoard)
-    {
-        int rows = board.GetLength(0);
-        int cols = board.GetLength(1);
+	private static void DisplayBoard(Ship[,] board, GameController gm, bool IsShipBoard)
+	{
+		int rows = board.GetLength(0);
+		int cols = board.GetLength(1);
 
-        // Print column headers
-        Console.Write("   ");
-        for (int i = 0; i < cols; i++)
-        {
-            Console.Write($"{i}  ");
-        }
-        Console.WriteLine();
-        
-        // Print separator line
-        Console.Write("   ");
-        for (int i = 0; i < cols; i++)
-        {
-            Console.Write("-- ");
-        }
-        Console.WriteLine();
+		// Print column headers
+		Console.Write("   ");
+		for (int i = 0; i < cols; i++)
+		{
+			Console.Write($"{i}  ");
+		}
+		Console.WriteLine();
+		
+		// Print separator line
+		Console.Write("   ");
+		for (int i = 0; i < cols; i++)
+		{
+			Console.Write("-- ");
+		}
+		Console.WriteLine();
 
-        // Print board content
-        for (int row = 0; row < rows; row++)
-        {
-            Console.Write($"{row} |");
-            for (int col = 0; col < cols; col++)
-            {
-                char symbol = GetBoardSymbol(board[row, col], new Coordinate(row, col), gm, IsShipBoard);
-                Console.Write($"{symbol}  ");
-            }
-            Console.WriteLine();
-        }
-    }
+		// Print board content
+		for (int row = 0; row < rows; row++)
+		{
+			Console.Write($"{row} |");
+			for (int col = 0; col < cols; col++)
+			{
+				char symbol = GetBoardSymbol(board[row, col], new Coordinate(row, col), gm, IsShipBoard);
+				Console.Write($"{symbol}  ");
+			}
+			Console.WriteLine();
+		}
+	}
 
-    private static char GetBoardSymbol(Ship ship, Coordinate coord, GameController gm, bool IsShipBoard)
-    {
-        if (ship == null)
-        {
-            return IsShipBoard
-                ? ValidMissAttack(gm, coord, false) ? 'M' : '.'
-                : ValidMissAttack(gm, coord, true) ? 'M' : '.';
-        }
+	private static char GetBoardSymbol(Ship ship, Coordinate coord, GameController gm, bool IsShipBoard)
+	{
+		if (ship == null)
+		{
+			return IsShipBoard
+				? ValidMissAttack(gm, coord, false) ? 'M' : '.'
+				: ValidMissAttack(gm, coord, true) ? 'M' : '.';
+		}
 
-        bool isHit = ship.statusOccaption.ContainsValue(OccopationType.Hit);
-        if (isHit && DisplayHitShip(ship, coord))
-        {
-            return 'X';
-        }
+		bool isHit = ship.statusOccaption.ContainsValue(OccopationType.Hit);
+		if (isHit && DisplayHitShip(ship, coord))
+		{
+			return 'X';
+		}
+		return '.';
+	}
 
-        // Return ship symbol or default
-        return IsShipBoard ? _shipSymbol[ship._shipType] : '.';
-    }
-	static bool DisplayHitShip(Ship ship, Coordinate cordinate)
+	static bool DisplayHitShip(Ship ship, Coordinate coordinate)
 	{
 		foreach (var item in ship.statusOccaption.Keys)
 		{
-			if (cordinate.Equals(item))
+			if (item.x == cordinate.x && item.y == cordinate.y)
 			{
 				return true;
 
@@ -271,14 +270,14 @@ public partial class Program
 		}
 		return false;
 	}
-	static bool ValidMissAttack(GameController gm, Coordinate cordinate, bool isAttackBorad)
+	static bool ValidMissAttack(GameController gm, Coordinate coordinate, bool isAttackBorad)
 	{
 
 		if (isAttackBorad)
 		{
 			foreach (var item in gm.GetMissedAttackBoard(gm.GetCurrentPlayer()))
 			{
-				if (item.x == cordinate.x && item.y == cordinate.y)
+				if (item.x == coordinate.x && item.y == coordinate.y)
 				{
 					return true;
 				}
@@ -288,7 +287,7 @@ public partial class Program
 		}
 		foreach (var item in gm.GetMissedShipBoard(gm.GetCurrentPlayer()))
 		{
-			if (cordinate.Equals(item))
+			if (item.x == cordinate.x && item.y == cordinate.y)
 			{
 				return true;
 			}
@@ -321,7 +320,7 @@ public partial class Program
 		}
 	}
 
-	private static bool TryParseCoordinates(string input, out int row, out int col)
+	static bool TryParseCoordinates(string input, out int row, out int col)
 	{
 		row = 0;
 		col = 0;
@@ -337,10 +336,10 @@ public partial class Program
 		return false;
 	}
 
-	public static bool IsValidCordinate(string cordinate)
+	static bool IsValidCordinate(string coordinate)
 	{
-		bool status = int.TryParse(cordinate, out int cordinateInt);
-		if (status && cordinateInt < 10 && cordinateInt >= 0)
+		bool status = int.TryParse(coordinate, out int coordinateInt);
+		if (status && coordinateInt < 10 && coordinateInt >= 0)
 		{
 			return true;
 		}
