@@ -11,7 +11,7 @@ public class GameController
 {
 	private List<IPlayer> _players;
 	
-	private Dictionary<IPlayer, ShipBoard> _attackBoards = new();
+	private Dictionary<IPlayer, AttackBoard> _attackBoards = new();
 	private Dictionary<IPlayer, ShipBoard> _shipBoards = new();
 	private IPlayer _currentPlayer;	
 	private Dictionary<IPlayer, List<Ship>> _shipsPlayer = new();
@@ -89,12 +89,12 @@ public class GameController
 		_shipsPlayer.Add(_players[1], _ships_p2);
 
 		//set attack boards and ship boards for each player
-		_attackBoards[_players[0]] = new ShipBoard(_shipsPlayer[_players[1]]);
+		_attackBoards[_players[0]] = new AttackBoard(_shipsPlayer[_players[1]]);
 		_shipBoards[_players[0]] = new ShipBoard(_shipsPlayer[_players[0]]);
 
 
 		_shipBoards[_players[1]] = new ShipBoard(_shipsPlayer[_players[1]]);
-		_attackBoards[_players[1]] = new ShipBoard(_shipsPlayer[_players[0]]);
+		_attackBoards[_players[1]] = new AttackBoard(_shipsPlayer[_players[0]]);
 
 		//set current player and next player
 		_currentPlayer = _players[0];
