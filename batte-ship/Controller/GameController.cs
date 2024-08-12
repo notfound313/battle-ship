@@ -13,12 +13,10 @@ public class GameController
 	private IPlayer _player1, _player2;
 	private Dictionary<IPlayer, ShipBoard> _attackBoards = new();
 	private Dictionary<IPlayer, ShipBoard> _shipBoards = new();
-	private IPlayer _currentPlayer;
-	private IPlayer _nextPlayer;
+	private IPlayer _currentPlayer;	
 	private Dictionary<IPlayer, List<Ship>> _shipsPlayer = new();
 	private Dictionary<IPlayer, List<Coordinate>> _cordinates = new();
-	private List<Ship> _ships_p1 = new();
-	private List<Ship> _ships_p2 = new();
+	
 
 
 
@@ -31,6 +29,8 @@ public class GameController
 		_player2 = _players[1];
 		
 		//read cordinates ship from file
+		List<Ship> _ships_p1 ;
+		List<Ship> _ships_p2 ;
 		var knowTypes = new List<Type> { typeof(BattleShip), typeof(CruiserShip), typeof(DestroyerShip), typeof(SubmarineShip), typeof(CarrierShip), typeof(Coordinate) };
 		DataContractSerializer dataContract = new DataContractSerializer(typeof(List<Ship>), knowTypes);
 
@@ -61,7 +61,7 @@ public class GameController
 
 		//set current player and next player
 		_currentPlayer =_player1;
-		_nextPlayer = _player2;
+		
 	}
 
 
