@@ -9,24 +9,26 @@ namespace Components.Battle.Ship;
 
 public class GameController
 {
-	private List<IPlayer> _players;
-	private IPlayer _player1, _player2;
+	private List<IPlayer>? _players;
+	private int maxPlayers = 2;
+	
 	private Dictionary<IPlayer, ShipBoard> _attackBoards = new();
 	private Dictionary<IPlayer, ShipBoard> _shipBoards = new();
 	private IPlayer _currentPlayer;	
 	private Dictionary<IPlayer, List<Ship>> _shipsPlayer = new();
-	private Dictionary<IPlayer, List<Coordinate>> _cordinates = new();
+	
 	
 
 
 
 	public GameController(List<IPlayer> players)
 	{
-		//set players in list
+		//set players in list		
+		if (_players.Count > maxPlayers)
+		{
+			throw new ArgumentException("Max players is 2");
+		}
 		_players = players;
-		//set players for each player
-		_player1 = _players[0];
-		_player2 = _players[1];
 		
 		//read cordinates ship from file
 		List<Ship> _ships_p1 ;
@@ -48,19 +50,19 @@ public class GameController
 		}
 		
 		//set ships for each player
-		_shipsPlayer.Add(_player1, _ships_p1);
-		_shipsPlayer.Add(_player2, _ships_p2);
+		_shipsPlayer.Add(players[0], _ships_p1);
+		_shipsPlayer.Add(players[1], _ships_p2);
 		
 		//set attack boards and ship boards for each player
-		_attackBoards[_player1] = new ShipBoard(_shipsPlayer[_player2]);
-		_shipBoards[_player1] = new ShipBoard(_shipsPlayer[_player1]);
+		_attackBoards[players[0]] = new ShipBoard(_shipsPlayer[players[1]]);
+		_shipBoards[players[0]] = new ShipBoard(_shipsPlayer[players[0]]);
 
 
-		_shipBoards[_player2] = new ShipBoard(_shipsPlayer[_player2]);
-		_attackBoards[_player2] = new ShipBoard(_shipsPlayer[_player1]);
+		_shipBoards[players[1]] = new ShipBoard(_shipsPlayer[players[1]]);
+		_attackBoards[players[1]] = new ShipBoard(_shipsPlayer[players[0]]);
 
 		//set current player and next player
-		_currentPlayer =_player1;
+		_currentPlayer =players[0];
 		
 	}
 
@@ -137,6 +139,18 @@ public class GameController
 				return;
 			}
 		}
+	}
+	
+	private IPlayer GetNextPlayer()
+	{
+		foreach (var player in _players)
+		{
+			if (player != _currentPlayer)
+			{
+				return player;
+			}
+		}
+		return null;
 	}
 
 

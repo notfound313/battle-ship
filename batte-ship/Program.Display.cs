@@ -189,7 +189,7 @@ public partial class Program
 
 	}
 
-	 public static void DisplayShipBoard(GameController gm, IPlayer player)
+	public static void DisplayShipBoard(GameController gm, IPlayer player)
 	{
 		Console.WriteLine();
 		Console.WriteLine($"The {player.Name} Ship Board");
@@ -219,7 +219,7 @@ public partial class Program
 			Console.Write($"{i}  ");
 		}
 		Console.WriteLine();
-		
+
 		// Print separator line
 		Console.Write("   ");
 		for (int i = 0; i < cols; i++)
@@ -250,7 +250,7 @@ public partial class Program
 				: ValidMissAttack(gm, coord, true) ? 'M' : '.';
 		}
 
-		bool isHit = ship.statusOccaption.ContainsValue(OccopationType.Hit);
+		bool isHit = ship.statusCoorOccaption.ContainsValue(OccopationType.Hit);
 		if (isHit && DisplayHitShip(ship, coord))
 		{
 			return 'X';
@@ -260,16 +260,11 @@ public partial class Program
 
 	static bool DisplayHitShip(Ship ship, Coordinate coordinate)
 	{
-		foreach (var item in ship.statusOccaption.Keys)
-		{
-			if (item.Equals(coordinate))
-			{
-				return true;
-
-			}
-		}
-		return false;
+		return ship.statusCoorOccaption.Keys
+			.Where(item => item.Equals(coordinate))
+			.Any();
 	}
+
 	static bool ValidMissAttack(GameController gm, Coordinate coordinate, bool isAttackBorad)
 	{
 
@@ -287,7 +282,7 @@ public partial class Program
 		}
 		foreach (var item in gm.GetMissedShipBoard(gm.GetCurrentPlayer()))
 		{
-			if (item.x == coordinate.x && item.y == coordinate.y)
+			if (coordinate.Equals(item))
 			{
 				return true;
 			}

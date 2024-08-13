@@ -11,31 +11,27 @@ namespace Components.Battle.Ship;
 public class Ship : IShip
 {
 	[DataMember]
-	private int _hits;
+	private int _hits = 0;
 	[DataMember]
 	public readonly int _sizeShip;
 	[DataMember]
 	public readonly ShipType _shipType;
 
 	[DataMember]
-	private List<Coordinate> _cordinates;
-	[DataMember]
 	public string ShipName { get; set; }
-	public Dictionary<Coordinate, OccopationType> statusOccaption = new ();
+	public Dictionary<Coordinate, OccopationType> statusCoorOccaption = new();
 
 	public Ship(ShipType shipType, int sizeShip, string shipName)
 	{
 		_shipType = shipType;
-		
 		_sizeShip = sizeShip;
 		ShipName = shipName;
-		_hits = 0;
 
 	}
-	public Ship(){}
+	public Ship() { }
 
-	
-	
+
+
 	public int GetShipSize()
 	{
 		return _sizeShip;
@@ -46,13 +42,16 @@ public class Ship : IShip
 		{
 			return false;
 		}
-		_cordinates = cordinates;
+		foreach (var cordinate in cordinates)
+		{
+			SetstatusOccaption(cordinate);
+		}
 		return true;
 	}
-	
-	private void SetstatusOccaption(Coordinate cordinate , OccopationType occopationType)
+
+	private void SetstatusOccaption(Coordinate cordinate)
 	{
-		statusOccaption.Add(cordinate, occopationType);
+		statusCoorOccaption.Add(cordinate, OccopationType.Empty);
 	}
 
 	public bool IsShunk()
@@ -62,7 +61,7 @@ public class Ship : IShip
 
 	public List<Coordinate> GetCordinates()
 	{
-		return _cordinates;
+		return new List<Coordinate>(statusCoorOccaption.Keys);
 	}
 
 	public bool IsHit(Coordinate cordinate)
@@ -70,24 +69,21 @@ public class Ship : IShip
 		if (IsCordinateInShip(cordinate))
 		{
 			_hits++;
-			SetstatusOccaption(cordinate, OccopationType.Hit);
-			
+			statusCoorOccaption[cordinate] = OccopationType.Hit;
 			return true;
 		}
 		return false;
 	}
-	
+
 	private bool IsCordinateInShip(Coordinate cordinate)
 	{
-		foreach (var cor in _cordinates)
-		{
-			if (cor.x == cordinate.x && cor.y == cordinate.y)
-			{
-				return true;
-			}
-			
-		}
-		return false;
+		return statusCoorOccaption.Keys.Any(cor => cor.Equals(cordinate));
+	}
+
+
+	public virtual IShip DeepCopy()
+	{
+		return (IShip)MemberwiseClone();
 	}
 
 }
