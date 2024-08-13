@@ -85,7 +85,7 @@ public partial class ShipBoard : Board<Ship>
 
 		// set coordinates
 
-		if (ship.setCordinates(CalculateShipCordinates(from, to)))
+		if (ship.SetCordinates(CalculateShipCordinates(from, to)))
 		{
 			// Delete ship on the board
 			RemoveShipFromBoard(ship);
@@ -95,7 +95,7 @@ public partial class ShipBoard : Board<Ship>
 		}
 
 
-		return ship.setCordinates(CalculateShipCordinates(from, to));
+		return ship.SetCordinates(CalculateShipCordinates(from, to));
 	}
 	private void RemoveShipFromBoard(Ship ship)
 	{

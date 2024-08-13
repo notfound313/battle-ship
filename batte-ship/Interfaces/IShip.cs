@@ -9,6 +9,6 @@ public interface IShip
 	
 	bool IsHit(Coordinate cordinate);
 	
-	bool setCordinates(List<Coordinate> cordinates);
+	bool SetCordinates(List<Coordinate> cordinates);
 	List<Coordinate> GetCordinates();
 }

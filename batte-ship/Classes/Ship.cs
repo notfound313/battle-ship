@@ -19,6 +19,7 @@ public class Ship : IShip
 
 	[DataMember]
 	public string ShipName { get; set; }
+	[DataMember]
 	public Dictionary<Coordinate, OccopationType> statusCoorOccaption = new();
 
 	public Ship(ShipType shipType, int sizeShip, string shipName)
@@ -36,7 +37,7 @@ public class Ship : IShip
 	{
 		return _sizeShip;
 	}
-	public bool setCordinates(List<Coordinate> cordinates)
+	public bool SetCordinates(List<Coordinate> cordinates)
 	{
 		if (cordinates.Count != _sizeShip)
 		{
@@ -51,7 +52,7 @@ public class Ship : IShip
 
 	private void SetstatusOccaption(Coordinate cordinate)
 	{
-		statusCoorOccaption.Add(cordinate, OccopationType.Empty);
+		statusCoorOccaption?.Add(cordinate, OccopationType.Empty);
 	}
 
 	public bool IsShunk()

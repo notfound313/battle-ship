@@ -24,34 +24,58 @@ public class GameController
 	public GameController(List<IPlayer> players)
 	{
 		//set players in list		
-		if (_players.Count > maxPlayers)
+		if (players.Count > maxPlayers)
 		{
 			throw new ArgumentException("Max players is 2");
 		}
 		_players = players;
 		
 		//read cordinates ship from file
-		List<Ship> _ships_p1 ;
-		List<Ship> _ships_p2 ;
+		Ship battleShip = new BattleShip("BattleShip");
+		Ship cruiserShip = new CruiserShip("CruiserShip");
+		Ship destroyerShip = new DestroyerShip("DestroyerShip");
+		Ship submarineShip = new SubmarineShip("SubmarineShip");
+		Ship carrierShip = new CarrierShip("CarrierShip");
+		List<Ship> ships_p1 = new List<Ship> { battleShip, cruiserShip, destroyerShip, submarineShip, carrierShip };
+		List<Ship> ships_p2 = new List<Ship>(ships_p1);
+		foreach (var item in ships_p1)
+		{
+			for (int x = 0; x < item._sizeShip; x++)
+			{
+				List<Coordinate> coor = new();
+				for (int y = 0; y <= x; y++)
+				{
+					coor.Add(new Coordinate(x,y));
+				}
+				item.SetCordinates(coor);
+			}
+		}
 		var knowTypes = new List<Type> { typeof(BattleShip), typeof(CruiserShip), typeof(DestroyerShip), typeof(SubmarineShip), typeof(CarrierShip), typeof(Coordinate) };
 		DataContractSerializer dataContract = new DataContractSerializer(typeof(List<Ship>), knowTypes);
 
-		using (FileStream fs = new FileStream(@".\ships.xml", FileMode.Open))
+		using (FileStream fs = new FileStream(@".\ships.xml", FileMode.Create))
 		{
 
-			_ships_p1 = (List<Ship>)dataContract.ReadObject(fs);
+			dataContract.WriteObject(fs, ships_p1);
 			
 		}
-			using (FileStream fs = new FileStream(@".\ships.xml", FileMode.Open))
-		{
+		// 	using (FileStream fs = new FileStream(@".\ships.xml", FileMode.Open))
+		// {
 
-			_ships_p2 = (List<Ship>)dataContract.ReadObject(fs);
+		// 	_ships_p2 = (List<Ship>)dataContract.ReadObject(fs);
 			
+		// }
+		foreach (var item in ships_p1)
+		{
+			Console.WriteLine(item.ShipName);
+			item.GetCordinates().ForEach(c => Console.Write($" x :{c.x} Y :{c.y}  "));
+			Console.WriteLine();
 		}
+		Console.ReadKey();
 		
 		//set ships for each player
-		_shipsPlayer.Add(players[0], _ships_p1);
-		_shipsPlayer.Add(players[1], _ships_p2);
+		_shipsPlayer.Add(players[0], ships_p1);
+		_shipsPlayer.Add(players[1], ships_p2);
 		
 		//set attack boards and ship boards for each player
 		_attackBoards[players[0]] = new ShipBoard(_shipsPlayer[players[1]]);
