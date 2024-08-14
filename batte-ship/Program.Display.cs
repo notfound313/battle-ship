@@ -13,6 +13,7 @@ public partial class Program
 		{
 			ChangeCordinateShip(gm, py);
 		}
+		Console.WriteLine("Presss any key to start the game");
 
 		Begining();
 		Console.WriteLine();
@@ -203,7 +204,7 @@ public partial class Program
 		Console.WriteLine();
 		Console.WriteLine($"The {player.Name} Attack Board");
 
-		Ship[,] board = gm.GetAttckBoard(player);
+		Ship[,] board = gm.GetAttackBoard(player);
 		DisplayBoard(board, gm, IsShipBoard: false);
 	}
 
@@ -255,7 +256,8 @@ public partial class Program
 		{
 			return 'X';
 		}
-		return '.';
+		return _shipSymbol[ship._shipType];
+		
 	}
 
 	static bool DisplayHitShip(Ship ship, Coordinate coordinate)

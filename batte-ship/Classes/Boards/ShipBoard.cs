@@ -25,6 +25,7 @@ public partial class ShipBoard : Board<Ship>
 	#region Setting the ship in the board
 	public override void SetShipInBoard()
 	{
+		// Set the ship in the board
 		foreach (var ship in ships)
 		{
 			foreach (var cordinate in ship.GetCordinates())
