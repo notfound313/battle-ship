@@ -13,7 +13,8 @@ public partial class Program
 		{
 			ChangeCordinateShip(gm, py);
 		}
-		Console.WriteLine("Presss any key to start the game");
+		TypingTextAnimation("Presss any key to start the game");
+		Console.ReadKey();
 
 		Begining();
 		Console.WriteLine();
@@ -250,11 +251,16 @@ public partial class Program
 				? ValidMissAttack(gm, coord, false) ? 'M' : '.'
 				: ValidMissAttack(gm, coord, true) ? 'M' : '.';
 		}
+		
 
 		bool isHit = ship.statusCoorOccaption.ContainsValue(OccopationType.Hit);
 		if (isHit && DisplayHitShip(ship, coord))
 		{
 			return 'X';
+		}
+		if (!IsShipBoard)
+		{
+			return '.';
 		}
 		return _shipSymbol[ship._shipType];
 		
