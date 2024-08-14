@@ -14,7 +14,7 @@ public partial class Program
 			ChangeCordinateShip(gm, py);
 		}
 		TypingTextAnimation("Presss any key to start the game");
-		Console.ReadKey();
+		// Console.ReadKey();
 
 		Begining();
 		Console.WriteLine();
