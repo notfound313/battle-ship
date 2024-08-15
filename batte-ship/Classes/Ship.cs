@@ -43,6 +43,10 @@ public class Ship : IShip
 		{
 			return false;
 		}
+		if (statusCoorOccaption.Count > 0)
+		{
+			statusCoorOccaption.Clear();
+		}
 		foreach (var cordinate in cordinates)
 		{
 			SetstatusOccaption(cordinate);
