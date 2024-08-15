@@ -96,7 +96,7 @@ public class GameController
 		var attackBoard = _shipBoards[GetNextPlayer()];
 		return attackBoard.IsHit(coordinate);
 	}
-	public List<Coordinate> GetMissedAttackBoard(IPlayer player)
+	public List<Coordinate> GetMissedAttackBoard()
 	{
 		var attackBoard = _shipBoards[GetNextPlayer()];
 		return attackBoard.GetMissedAttacks();
@@ -114,14 +114,12 @@ public class GameController
 		var shipBoard = _shipBoards[player];
 		if (IsShotHit(player, coordinate))
 		{
-			Console.WriteLine("Attack hit");
-			Console.WriteLine(attackBoard.SetHit(coordinate));
+			Console.WriteLine("Attack hit");			
 			return attackBoard.SetHit(coordinate);
 		}
 		Console.WriteLine("Missed mamangggggg");
 		SwitchPlayer();
-		Console.WriteLine("Player Switch");
-		shipBoard.SetMissAttack(coordinate);
+		Console.WriteLine("Player Switch");		
 		attackBoard.SetMissAttack(coordinate);
 		return false;
 	}

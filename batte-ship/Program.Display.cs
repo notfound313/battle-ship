@@ -253,7 +253,7 @@ public partial class Program
 		}
 		
 
-		bool isHit = ship.statusCoorOccaption.ContainsValue(OccopationType.Hit);
+		bool isHit = ship.statusCoorOccaption[coord].Equals(OccopationType.Hit);
 		if (isHit && DisplayHitShip(ship, coord))
 		{
 			return 'X';
@@ -278,16 +278,16 @@ public partial class Program
 
 		if (isAttackBorad)
 		{
-			foreach (var item in gm.GetMissedAttackBoard(gm.GetCurrentPlayer()))
+			foreach (var item in gm.GetMissedAttackBoard())
 			{
-				if (item.Equals(gm.GetMissedAttackBoard(gm.GetCurrentPlayer())))
+				if (coordinate.Equals(item))
 				{
 					return true;
 				}
 
 			}
 			return false;
-		}
+		}else{
 		foreach (var item in gm.GetMissedShipBoard(gm.GetCurrentPlayer()))
 		{
 			if (coordinate.Equals(item))
@@ -296,7 +296,9 @@ public partial class Program
 			}
 
 		}
+	}
 		return false;
+		
 
 	}
 
