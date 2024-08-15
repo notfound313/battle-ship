@@ -5,10 +5,13 @@ using Components.Player;
 using System.Runtime.Serialization.Formatters.Binary;
 using System.Text.Json;
 using System.Text.Json.Serialization;
+using NLog;
+using Microsoft.Extensions.Logging;
 namespace Components.Battle.Ship;
 
 public class GameController
 {
+	private ILogger<GameController>? _logger ;
 	private List<IPlayer>? _players;
 	private int maxPlayers = 2;
 	
@@ -21,7 +24,7 @@ public class GameController
 
 
 
-	public GameController(List<IPlayer> players)
+	public GameController(List<IPlayer> players, ILogger<GameController>? logger = null)
 	{
 		//set players in list		
 		if (players.Count > maxPlayers)
@@ -66,6 +69,9 @@ public class GameController
 		//set current player and next player
 		_currentPlayer =players[0];
 		
+		//set Logger
+		_logger = logger;
+		
 	}
 
 
@@ -79,7 +85,7 @@ public class GameController
 		{
 			if (ship._shipType == shipType)
 			{
-
+				_logger?.LogInformation($"Ship type: {shipType} reaplaced From: {from} To: {to}");
 				return shipBoard.PlaceShip(ship, from, to);
 
 			}
@@ -94,6 +100,7 @@ public class GameController
 	public bool IsShotHit(IPlayer player, Coordinate coordinate)
 	{
 		var attackBoard = _shipBoards[GetNextPlayer()];
+		_logger?.LogInformation($"Shot hit: {coordinate}");
 		return attackBoard.IsHit(coordinate);
 	}
 	public List<Coordinate> GetMissedAttackBoard()
@@ -113,12 +120,13 @@ public class GameController
 		var attackBoard = _shipBoards[GetNextPlayer()];
 	   
 		if (IsShotHit(player, coordinate) && !attackBoard.IsShipAnyHit(coordinate))
-		{														
+		{
+			_logger?.LogInformation($"Shoot on Cordinate x {coordinate.x} and y {coordinate.y} ");													
 			return attackBoard.SetHit(coordinate);
 		}
-		
+		_logger?.LogInformation("Switch Player");
 		SwitchPlayer();
-		
+		_logger?.LogInformation("Miss shooting");		
 		attackBoard.SetMissAttack(coordinate);
 		return false;
 	}
@@ -205,6 +213,7 @@ public class GameController
 		{
 			if (CheckWinner(player))
 			{
+				_logger?.LogInformation($"Player {player} won");
 				return player;
 			}
 		}
@@ -213,6 +222,7 @@ public class GameController
 
 	public bool IsGameOver()
 	{
+		_logger?.LogInformation("Game over");
 		return GetWinner() != null;
 	}
 

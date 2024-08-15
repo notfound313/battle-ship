@@ -1,6 +1,8 @@
 ﻿
 using Components.Battle.Ship;
 using Components.Player;
+using Microsoft.Extensions.Logging;
+using NLog.Extensions.Logging;
 
 public partial class Program
 {
@@ -18,12 +20,20 @@ public partial class Program
 
 	static void Main(string[] args)
 	{
+		var loggerFactory = LoggerFactory.Create(b =>
+					{
+						b.ClearProviders();
+						b.SetMinimumLevel(LogLevel.Information);
+						b.AddNLog("nlog.config");
+					});
+		ILogger<GameController> logger = loggerFactory.CreateLogger<GameController>();
+		
 		Console.WriteLine("Welcome to Battle Ship Game");
 
 		List<IPlayer> players = CreateNewPlayer();
 
 
-		GameController gm = new(players);
+		GameController gm = new(players, logger);
 		Display(gm, players);
 
 
