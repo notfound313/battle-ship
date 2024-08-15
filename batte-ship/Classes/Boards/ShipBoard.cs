@@ -16,9 +16,9 @@ public partial class ShipBoard : Board<Ship>
 		return ships.TrueForAll(ship => ship.IsShunk());
 	}
 
-	public bool IsAnyShipHit(Coordinate cordinate)
+	public bool IsShipAnyHit(Coordinate cordinate)
 	{
-		return ships.Exists(ship => ship.IsHit(cordinate));
+		return ships.Exists(ship => ship.HasEverHit(cordinate));
 	}
 	#endregion
 

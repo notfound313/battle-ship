@@ -111,15 +111,14 @@ public class GameController
 	public bool ProcessShotResult(IPlayer player, Coordinate coordinate)
 	{
 		var attackBoard = _shipBoards[GetNextPlayer()];
-		var shipBoard = _shipBoards[player];
-		if (IsShotHit(player, coordinate))
-		{
-			Console.WriteLine("Attack hit");			
+	   
+		if (IsShotHit(player, coordinate) && !attackBoard.IsShipAnyHit(coordinate))
+		{														
 			return attackBoard.SetHit(coordinate);
 		}
-		Console.WriteLine("Missed mamangggggg");
+		
 		SwitchPlayer();
-		Console.WriteLine("Player Switch");		
+		
 		attackBoard.SetMissAttack(coordinate);
 		return false;
 	}

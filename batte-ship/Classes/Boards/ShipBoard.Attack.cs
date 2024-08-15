@@ -8,7 +8,16 @@ public partial class ShipBoard: Board<Ship>
 	#region Attack Ship on Board	
 	public bool IsHit(Coordinate cordinate)
 	{
+		if(HasEverHit(cordinate))
+		{
+			return false;
+		}
 		return board[cordinate.x,cordinate.y] != null;
+	}
+	
+	private bool HasEverHit(Coordinate cordinate)
+	{
+		return missAttacks.Exists(coor => coor.Equals(cordinate));
 	}
 	private Ship GetShipHasHit(Coordinate cordinate)
 	{

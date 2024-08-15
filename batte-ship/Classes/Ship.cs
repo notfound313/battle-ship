@@ -79,10 +79,20 @@ public class Ship : IShip
 		}
 		return false;
 	}
+	public bool HasEverHit(Coordinate cordinate)
+	{
+		OccopationType occaptionType;
+		if (statusCoorOccaption.TryGetValue(cordinate, out occaptionType))
+		{
+			return occaptionType == OccopationType.Hit;
+		}
+		return false;
+		
+	}
 
 	private bool IsCordinateInShip(Coordinate cordinate)
 	{
-		return statusCoorOccaption.Keys.Any(cor => cor.Equals(cordinate));
+		return statusCoorOccaption.Keys.Any(cor => cor.x == cordinate.x && cor.y == cordinate.y);
 	}
 
 
