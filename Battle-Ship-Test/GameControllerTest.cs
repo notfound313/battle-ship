@@ -91,6 +91,14 @@ public class GameControllerTest
 		//assert
 		Assert.IsFalse(isHit);
 	}
+	[Test]
+	public void IsGameOver_WhenCalled_ReturnsIsGameOver()
+	{
+		//arrange
+		var isGameOver = _gameController.IsGameOver();
+		//assert
+		Assert.IsFalse(isGameOver);
+	}
 	
 	
 }
