@@ -45,6 +45,17 @@ public class GameControllerTest
 		Assert.IsNotNull(shipBoard);
 	}
 	[Test]
+	public void SwicthPlayer_NextPLayer_ShipIsHit()
+	{
+		//arrange
+		var currentPlayer = _gameController.GetCurrentPlayer();		
+		_gameController.ProcessShotResult(_player1.Object, new Coordinate(0,0));
+		var expectedPlayerNext = _gameController.GetCurrentPlayer();
+		//assert
+		Assert.That(currentPlayer, Is.EqualTo(expectedPlayerNext));
+	}
+	
+	[Test]
 	public void GetShipHasHit_WhenCalled_ReturnsShipHasHit()
 	{
 		//arrange
@@ -99,6 +110,33 @@ public class GameControllerTest
 		//assert
 		Assert.IsFalse(isGameOver);
 	}
+	[TestCase(0,0,0,0, ShipType.Submarine)]
+	public void PlaceShip_False_ShipIsOccupied(int x1, int y1, int x2, int y2, ShipType shipType)
+	{
+		//
+		var from = new Coordinate(x1, y1);
+		var to = new Coordinate(x2, y2);
+		IPlayer player = _gameController.GetCurrentPlayer();
+		var expected = false;
+		//arrange
+		var placeShip = _gameController.PlaceShipsOnBoard(player,shipType,from, to);
+		//assert
+		Assert.That(placeShip, Is.EqualTo(expected));
+				
+	}
 	
+	[TestCase(9,9,9,9,ShipType.Submarine)]
+	public void PlaceShip_True_IsNotAnyShipAccouped(int x1, int y1, int x2, int y2, ShipType shipType)
+	{
+		var from = new Coordinate(x1, y1);
+		var to = new Coordinate(x2, y2);
+		var currentPlayer = _gameController.GetCurrentPlayer();
+		var expected = true;
+		//arrange
+		var placeShip = _gameController.PlaceShipsOnBoard(currentPlayer,shipType, from, to);
+		//assert
+		Assert.That(placeShip, Is.EqualTo(expected));
+		
+	}
 	
 }
